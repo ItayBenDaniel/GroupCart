@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from backend.routers import items
-from backend.database import Base, engine
+from .database import Base, engine
+from .routers import items
 
-# Initialize the database tables
+# Initialize database tables
 Base.metadata.create_all(bind=engine)
 
 # Create the FastAPI app

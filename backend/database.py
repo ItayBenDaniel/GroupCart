@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # PostgreSQL Connection URL
-DATABASE_URL = "postgresql://username:password@localhost:5432/shopping_list"
+DATABASE_URL = "postgresql://postgres:###@localhost:5432/postgres"
 
 # Create the database engine
 engine = create_engine(DATABASE_URL)
