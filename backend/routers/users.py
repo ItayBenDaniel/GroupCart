@@ -1,11 +1,22 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from backend.schemas import users as schemas
+from backend.crud import users as crud
+from backend import database
 
-router = APIRouter(prefix="/items")
+router = APIRouter(prefix="/users", tags=["users"])
 
-@router.get("")
-def get_items():
-    return {"message": "Get all items"}
+# Dependency to get the database session
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-@router.post("")
-def add_item(name: str, quantity: int = 0, price: float = 0.0):
-    return {"message": f"Item '{name}' added with quantity {quantity} and price {price}"}   
+@router.post("/signup", response_model=schemas.User)
+def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(crud.User).filter(crud.User.email == user.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return crud.create_user(db, user)

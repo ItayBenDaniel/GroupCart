@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 
 class UserBase(BaseModel):
-    name: str
-    quantity: int
+    username: str
+    email: str
 
 class UserCreate(UserBase):
-    pass
+    password: str
 
 class User(UserBase):
     id: int
-    purchased: bool
+    is_active: bool
 
     class Config:
         orm_mode = True
