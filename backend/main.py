@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from backend.database import Base, engine
-from backend.routers import items
+from backend.routers import items, users
 
 # Initialize database tables
 Base.metadata.create_all(bind=engine)
@@ -10,6 +10,7 @@ app = FastAPI()
 
 # Include the items router
 app.include_router(items.router)
+app.include_router(users.router)
 
 @app.get("/")
 def read_root():

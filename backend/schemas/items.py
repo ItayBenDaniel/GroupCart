@@ -11,5 +11,6 @@ class Item(ItemBase):
     id: int
     purchased: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True  # this replaces `orm_mode = True`
+    }
