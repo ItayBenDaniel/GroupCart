@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 
-class ItemBase(BaseModel):
+class ProductBase(BaseModel):
     name: str
     quantity: int
 
-class ItemCreate(ItemBase):
+class ProductCreate(ProductBase):
     pass
 
-class Item(ItemBase):
+class Product(ProductBase):
     id: int
     purchased: bool
 

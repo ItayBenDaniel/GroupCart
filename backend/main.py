@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from backend.database import Base, engine
-from backend.routers import items, users
+from backend.routers import products, users
 
 # Initialize database tables
 Base.metadata.create_all(bind=engine)
@@ -8,8 +8,7 @@ Base.metadata.create_all(bind=engine)
 # Create the FastAPI app
 app = FastAPI()
 
-# Include the items router
-app.include_router(items.router)
+app.include_router(products.router)
 app.include_router(users.router)
 
 @app.get("/")

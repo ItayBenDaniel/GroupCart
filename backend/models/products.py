@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from backend.database import Base
 
-class Item(Base):
-    __tablename__ = "items"
+class Product(Base):
+    __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
