@@ -20,4 +20,4 @@ def get_products_route(skip: int = 0, limit: int = 10, db: Session = Depends(get
 
 @router.post("/", response_model=Product)
 def add_product(product: ProductCreate, db: Session = Depends(get_db)):
-    return get_products(db, product)
+    return create_product(db, product)
