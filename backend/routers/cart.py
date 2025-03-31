@@ -9,6 +9,7 @@ from backend.core.utils import get_current_user
 
 router = APIRouter(prefix="/cart", tags=["cart"])
 
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -22,19 +23,35 @@ def get_db():
 def add_to_cart(
     item: CartItemCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user)
+    user_id: int = Depends(get_current_user),
 ):
+    if item.quantity <= 0:
+        raise HTTPException(
+            status_code=400, detail="Amount added needs to be greater than 0"
+        )
     # Optional: Check that product exists
     product = db.query(Product).filter(Product.id == item.product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
+    # Checking if item exists in cart
+    existing_item = (
+        db.query(CartDB)
+        .filter_by(user_id=user_id, product_id=item.product_id, is_deleted=False)
+        .first()
+    )
+
+    if existing_item:
+        existing_item.quantity += item.quantity
+        db.commit()
+        db.refresh(existing_item)
+        return existing_item
     # Create cart item
     db_item = CartDB(
         user_id=user_id,
         product_id=item.product_id,
         quantity=item.quantity,
-        purchased=False
+        purchased=False,
     )
     db.add(db_item)
     db.commit()
@@ -44,8 +61,7 @@ def add_to_cart(
 
 @router.get("/", response_model=list[CartItem])
 def get_user_cart(
-    db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user)
+    db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
 ):
     return db.query(CartDB).filter(CartDB.user_id == user_id).all()
 
@@ -55,16 +71,22 @@ def update_cart_item(
     item_id: int,
     updates: CartItemUpdate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user)
+    user_id: int = Depends(get_current_user),
 ):
-    item = db.query(CartDB).filter(
-        CartDB.id == item_id,
-        CartDB.user_id == user_id
-    ).first()
+    if updates.quantity < 0:
+        raise HTTPException(
+            status_code=400, detail="Amount added needs to be greater than 0"
+        )
+
+    item = (
+        db.query(CartDB).filter(CartDB.id == item_id, CartDB.user_id == user_id).first()
+    )
 
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
 
+    if updates.quantity == 0:
+        item.is_deleted = True
     if updates.quantity is not None:
         item.quantity = updates.quantity
     if updates.purchased is not None:
@@ -79,12 +101,11 @@ def update_cart_item(
 def delete_cart_item(
     item_id: int,
     db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user)
+    user_id: int = Depends(get_current_user),
 ):
-    item = db.query(CartDB).filter(
-        CartDB.id == item_id,
-        CartDB.user_id == user_id
-    ).first()
+    item = (
+        db.query(CartDB).filter(CartDB.id == item_id, CartDB.user_id == user_id).first()
+    )
 
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -92,4 +113,3 @@ def delete_cart_item(
     db.delete(item)
     db.commit()
     return {"detail": "Item removed from cart"}
-

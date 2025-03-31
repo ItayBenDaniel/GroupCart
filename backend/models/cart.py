@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Boolean,ForeignKey
+from sqlalchemy import Column, Integer, Boolean, ForeignKey
 from backend.database import Base
 
 
@@ -9,3 +9,4 @@ class CartDB(Base):
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1)
     purchased = Column(Boolean, default=False)
+    is_deleted = Column(Boolean, default=False)
