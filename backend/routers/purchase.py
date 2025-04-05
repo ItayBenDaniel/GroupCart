@@ -49,3 +49,15 @@ def get_my_purchases(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
 ):
     return db.query(Purchase).filter(Purchase.user_id == user_id).all()
+
+
+@router.delete("/{purchase_id}")
+def delete_purchase(
+    purchase_id: int,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    item = db.query(Purchase).filter(Purchase.id == purchase_id).first()
+    db.delete(item)
+    db.commit()
+    return f"Purchase id: {purchase_id} of user: {user_id} has been deleted"
