@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 
 class ProductBase(BaseModel):
     name: str
@@ -6,12 +7,11 @@ class ProductBase(BaseModel):
     category: str
     price: int
 
+
 class ProductCreate(ProductBase):
     pass
 
+
 class Product(ProductBase):
     id: int
-
-    model_config = {
-        "from_attributes": True  # this replaces `orm_mode = True`
-    }
+    model_config = ConfigDict(from_attributes=True)

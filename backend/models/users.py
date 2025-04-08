@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from backend.database import Base
 from sqlalchemy.orm import relationship
 
@@ -12,3 +12,5 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     purchases = relationship("Purchase", back_populates="user")
+    family_id = Column(Integer, ForeignKey("families.id"), nullable=True)
+    family = relationship("Family", back_populates="members", foreign_keys=[family_id])

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List
 
@@ -15,9 +15,7 @@ class PurchaseCreate(BaseModel):
 class PurchaseItemOut(BaseModel):
     product_id: int
     quantity: int
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PurchaseOut(BaseModel):
@@ -25,6 +23,4 @@ class PurchaseOut(BaseModel):
     user_id: int
     purchased_at: datetime
     items: List[PurchaseItemOut]
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
