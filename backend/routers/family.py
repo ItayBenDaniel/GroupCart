@@ -7,10 +7,7 @@ from backend.schemas.family import FamilyCreate, FamilyOut
 from backend.core.utils import get_current_user
 from typing import List
 
-router = APIRouter(prefix="/families", tags=["families"])
-
-
-router.post("/", response_model=FamilyOut)
+router = APIRouter(prefix="/family", tags=["Family"])
 
 
 def get_db():
@@ -21,6 +18,7 @@ def get_db():
         db.close()
 
 
+@router.post("/", response_model=FamilyOut)
 def create_family(
     family_data: FamilyCreate,
     db: Session = Depends(get_db),
@@ -39,9 +37,7 @@ def create_family(
     return family
 
 
-router.get("/me", response_model=List[FamilyOut])
-
-
+@router.get("/me", response_model=List[FamilyOut])
 def get_my_family(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
 ):
@@ -53,9 +49,7 @@ def get_my_family(
     return user.family
 
 
-router.post("/join/{family_id}", response_model=FamilyOut)
-
-
+@router.post("/{family_id}/join", response_model=FamilyOut)
 def join_family(
     family_id: int,
     db: Session = Depends(get_db),
@@ -68,3 +62,30 @@ def join_family(
     user.family_id = family_id
     db.commit
     return family
+
+
+@router.get("/{family_id}", response_model=FamilyOut)
+def get_family_by_id(
+    family_id: int,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    family = db.query(Family).filter(Family.id == family_id).first()
+    if not family:
+        raise HTTPException(status_code=404, detail="Family not found")
+    return family
+
+
+@router.post("/{family_id}/leave")
+def leave_family(
+    family_id: int,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or user.family_id != family_id:
+        raise HTTPException(status_code=400, detail="You are not in this family")
+
+    user.family_id = None
+    db.commit()
+    return {"message": "Left family successfully"}
