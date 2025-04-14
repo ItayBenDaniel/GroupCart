@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from backend.database import SessionLocal
 from backend.models.cart import CartDB
 from backend.models.products import Product
+from backend.models.users import User
 from backend.schemas.cart import CartItemCreate, CartItemUpdate, CartItem
 from backend.core.utils import get_current_user
 
@@ -40,6 +41,9 @@ def add_to_cart(
         .filter_by(user_id=user_id, product_id=item.product_id, is_deleted=False)
         .first()
     )
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user.family_id:
+        raise HTTPException(status_code=400, detail="User must belong to a family")
 
     if existing_item:
         existing_item.quantity += item.quantity
@@ -50,6 +54,7 @@ def add_to_cart(
     db_item = CartDB(
         user_id=user_id,
         product_id=item.product_id,
+        family_id=user.family_id,
         quantity=item.quantity,
         purchased=False,
     )
@@ -64,6 +69,28 @@ def get_user_cart(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
 ):
     return db.query(CartDB).filter(CartDB.user_id == user_id).all()
+
+
+@router.get("/{family_id}", response_model=list[CartItem])
+def get_family_cart(
+    family_id: int,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or user.family_id != family_id:
+        raise HTTPException(
+            status_code=403, detail="Not authorized to access this family cart"
+        )
+
+    # Get all non-deleted items from this family's cart
+    items = (
+        db.query(CartDB)
+        .filter(CartDB.family_id == family_id, CartDB.is_deleted == False)
+        .all()
+    )
+    return items
 
 
 @router.patch("/{item_id}", response_model=CartItem)

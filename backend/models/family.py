@@ -13,6 +13,7 @@ class Family(Base):
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     owner = relationship("User", foreign_keys=[owner_id])  # 👈 Already good
+    cart_items = relationship("CartDB", back_populates="family")
     members = relationship(
         "User",
         back_populates="family",

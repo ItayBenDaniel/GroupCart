@@ -37,7 +37,7 @@ def create_family(
     return family
 
 
-@router.get("/me", response_model=List[FamilyOut])
+@router.get("/me", response_model=FamilyOut)
 def get_my_family(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
 ):
@@ -57,10 +57,11 @@ def join_family(
 ):
     family = db.query(Family).filter(Family.id == family_id).first()
     if not family:
-        raise HTTPException(status_code="404", detail="Family not found")
+        raise HTTPException(status_code=404, detail="Family not found")
     user = db.query(User).filter(User.id == user_id).first()
     user.family_id = family_id
-    db.commit
+    db.commit()
+    db.refresh(user)
     return family
 
 

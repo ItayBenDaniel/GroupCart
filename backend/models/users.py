@@ -11,6 +11,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
-    purchases = relationship("Purchase", back_populates="user")
     family_id = Column(Integer, ForeignKey("families.id"), nullable=True)
     family = relationship("Family", back_populates="members", foreign_keys=[family_id])
+    cart_items = relationship("CartDB", back_populates="user")
+    purchases = relationship("Purchase", back_populates="user")
