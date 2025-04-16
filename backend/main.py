@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from backend.database import Base, engine
-from backend.routers import products, users, cart, purchase, family
+from backend.routers import products, users, cart, purchase, family, stores
 
 # Initialize database tables
 Base.metadata.create_all(bind=engine)
@@ -13,6 +13,7 @@ app.include_router(users.router)
 app.include_router(cart.router)
 app.include_router(purchase.router)
 app.include_router(family.router)
+app.include_router(stores.router)
 
 
 @app.get("/")
