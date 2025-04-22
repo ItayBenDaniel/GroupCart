@@ -1,0 +1,147 @@
+<Root>
+  <ChainId>7290058108879</ChainId>
+  <SubChainId>1</SubChainId>
+  <StoreId>12</StoreId>
+  <BikoretNo>2</BikoretNo>
+  <Promotions count="2">
+    <Promotion>
+      <PromotionId>587722179</PromotionId>
+      <PromotionDescription>וופלים קוואדרטיני ב 14.9</PromotionDescription>
+      <PromotionUpdateDate>2025-04-21 10:05:00</PromotionUpdateDate>
+      <PromotionStartDate>2025-04-18</PromotionStartDate>
+      <PromotionStartHour>00:00:00</PromotionStartHour>
+      <PromotionEndDate>2025-04-21</PromotionEndDate>
+      <PromotionEndHour>23:59:00</PromotionEndHour>
+      <RewardType>1</RewardType>
+      <DiscountType>1</DiscountType>
+      <DiscountRate>0.00</DiscountRate>
+      <AllowMultipleDiscounts>0</AllowMultipleDiscounts>
+      <MinQty>1</MinQty>
+      <MaxQty>5</MaxQty>
+      <DiscountedPrice>14.9</DiscountedPrice>
+      <DiscountedPricePerMida>14.9</DiscountedPricePerMida>
+      <MinNoOfItemOfered>10</MinNoOfItemOfered>
+      <AdditionalRestrictions>
+        <AdditionalIsCoupon>0</AdditionalIsCoupon>
+        <AdditionalGiftCount>0</AdditionalGiftCount>
+        <Clubs>
+          <ClubId>1</ClubId>
+        </Clubs>
+        <AdditionalIsTotal>0</AdditionalIsTotal>
+        <AdditionalIsActive>1</AdditionalIsActive>
+      </AdditionalRestrictions>
+      <PromotionItems count="11">
+        <Item>
+          <ItemCode>8000380007257</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380004942</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380142484</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380004911</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380004966</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380192588</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380004881</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380004676</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380180745</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380205400</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8000380004669</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+      </PromotionItems>
+      <GiftsItems count="0" />
+      <Remarks>וופלים קוואדרטיני 20</Remarks>
+      <MinPurchaseAmnt>0</MinPurchaseAmnt>
+    </Promotion>
+    <Promotion>
+      <PromotionId>587722044</PromotionId>
+      <PromotionDescription>מגוון עוגות בטעמים 24 יח' אנג'ילה ב 17.9</PromotionDescription>
+      <PromotionUpdateDate>2025-04-21 09:37:00</PromotionUpdateDate>
+      <PromotionStartDate>2025-04-16</PromotionStartDate>
+      <PromotionStartHour>00:00:00</PromotionStartHour>
+      <PromotionEndDate>2025-05-19</PromotionEndDate>
+      <PromotionEndHour>23:59:00</PromotionEndHour>
+      <RewardType>1</RewardType>
+      <DiscountType>1</DiscountType>
+      <DiscountRate>0.00</DiscountRate>
+      <AllowMultipleDiscounts>0</AllowMultipleDiscounts>
+      <MinQty>1</MinQty>
+      <MaxQty>5</MaxQty>
+      <DiscountedPrice>17.9</DiscountedPrice>
+      <DiscountedPricePerMida>17.9</DiscountedPricePerMida>
+      <MinNoOfItemOfered>10</MinNoOfItemOfered>
+      <AdditionalRestrictions>
+        <AdditionalIsCoupon>0</AdditionalIsCoupon>
+        <AdditionalGiftCount>0</AdditionalGiftCount>
+        <Clubs>
+          <ClubId>0</ClubId>
+        </Clubs>
+        <AdditionalIsTotal>0</AdditionalIsTotal>
+        <AdditionalIsActive>1</AdditionalIsActive>
+      </AdditionalRestrictions>
+      <PromotionItems count="4">
+        <Item>
+          <ItemCode>8681863145071</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863145088</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863145132</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863145101</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+      </PromotionItems>
+      <GiftsItems count="0" />
+      <Remarks>מגוון עוגות בטעמים  </Remarks>
+      <MinPurchaseAmnt>0</MinPurchaseAmnt>
+    </Promotion>
+  </Promotions>
+</Root>

@@ -9,9 +9,13 @@ def get_store_by_store_id(db: Session, store_id: int) -> Store | None:
 
 
 def create_store(db: Session, store: StoreCreate) -> Store:
+    print("WOW")
     existing = get_store_by_store_id(db, store.store_id)
     if existing:
+        print(f"EXISTING {existing}")
         return existing
+    print("NOT EXISTING ")
+
     db_store = Store(
         store_id=store.store_id,
         chain_id=store.chain_id,

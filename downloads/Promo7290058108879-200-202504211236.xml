@@ -1,0 +1,45 @@
+<Root>
+  <ChainId>7290058108879</ChainId>
+  <SubChainId>1</SubChainId>
+  <StoreId>200</StoreId>
+  <BikoretNo>7</BikoretNo>
+  <Promotions count="1">
+    <Promotion>
+      <PromotionId>587722251</PromotionId>
+      <PromotionDescription>שסק 1 קג ב 14.9</PromotionDescription>
+      <PromotionUpdateDate>2025-04-21 11:48:00</PromotionUpdateDate>
+      <PromotionStartDate>2025-04-21</PromotionStartDate>
+      <PromotionStartHour>00:00:00</PromotionStartHour>
+      <PromotionEndDate>2025-04-21</PromotionEndDate>
+      <PromotionEndHour>23:59:00</PromotionEndHour>
+      <RewardType>1</RewardType>
+      <DiscountType>1</DiscountType>
+      <DiscountRate>0.00</DiscountRate>
+      <AllowMultipleDiscounts>0</AllowMultipleDiscounts>
+      <MinQty>1</MinQty>
+      <MaxQty>5</MaxQty>
+      <DiscountedPrice>14.9</DiscountedPrice>
+      <DiscountedPricePerMida>14.9</DiscountedPricePerMida>
+      <MinNoOfItemOfered>10</MinNoOfItemOfered>
+      <AdditionalRestrictions>
+        <AdditionalIsCoupon>0</AdditionalIsCoupon>
+        <AdditionalGiftCount>0</AdditionalGiftCount>
+        <Clubs>
+          <ClubId>1</ClubId>
+        </Clubs>
+        <AdditionalIsTotal>0</AdditionalIsTotal>
+        <AdditionalIsActive>1</AdditionalIsActive>
+      </AdditionalRestrictions>
+      <PromotionItems count="1">
+        <Item>
+          <ItemCode>777094</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+      </PromotionItems>
+      <GiftsItems count="0" />
+      <Remarks>שסק @ 1 ק"ג ב 14.9</Remarks>
+      <MinPurchaseAmnt>0</MinPurchaseAmnt>
+    </Promotion>
+  </Promotions>
+</Root>

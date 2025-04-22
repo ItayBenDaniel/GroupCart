@@ -1,0 +1,65 @@
+<Root>
+  <ChainId>7290058108879</ChainId>
+  <SubChainId>1</SubChainId>
+  <StoreId>5</StoreId>
+  <BikoretNo>3</BikoretNo>
+  <Promotions count="1">
+    <Promotion>
+      <PromotionId>587722044</PromotionId>
+      <PromotionDescription>מגוון עוגות בטעמים 24 יח' אנג'ילה ב 17.9</PromotionDescription>
+      <PromotionUpdateDate>2025-04-21 08:46:00</PromotionUpdateDate>
+      <PromotionStartDate>2025-04-16</PromotionStartDate>
+      <PromotionStartHour>00:00:00</PromotionStartHour>
+      <PromotionEndDate>2025-05-19</PromotionEndDate>
+      <PromotionEndHour>23:59:00</PromotionEndHour>
+      <RewardType>1</RewardType>
+      <DiscountType>1</DiscountType>
+      <DiscountRate>0.00</DiscountRate>
+      <AllowMultipleDiscounts>0</AllowMultipleDiscounts>
+      <MinQty>1</MinQty>
+      <MaxQty>5</MaxQty>
+      <DiscountedPrice>17.9</DiscountedPrice>
+      <DiscountedPricePerMida>17.9</DiscountedPricePerMida>
+      <MinNoOfItemOfered>10</MinNoOfItemOfered>
+      <AdditionalRestrictions>
+        <AdditionalIsCoupon>0</AdditionalIsCoupon>
+        <AdditionalGiftCount>0</AdditionalGiftCount>
+        <Clubs>
+          <ClubId>0</ClubId>
+        </Clubs>
+        <AdditionalIsTotal>0</AdditionalIsTotal>
+        <AdditionalIsActive>1</AdditionalIsActive>
+      </AdditionalRestrictions>
+      <PromotionItems count="5">
+        <Item>
+          <ItemCode>8681863145132</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863147174</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863145101</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863145071</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+        <Item>
+          <ItemCode>8681863145088</ItemCode>
+          <IsGiftItem>0</IsGiftItem>
+          <ItemType>1</ItemType>
+        </Item>
+      </PromotionItems>
+      <GiftsItems count="0" />
+      <Remarks>מגוון עוגות בטעמים  </Remarks>
+      <MinPurchaseAmnt>0</MinPurchaseAmnt>
+    </Promotion>
+  </Promotions>
+</Root>

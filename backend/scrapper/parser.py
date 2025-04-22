@@ -11,18 +11,21 @@ def parse_stores_xml(file_path: str) -> List[StoreCreate]:
     tree = ET.parse(file_path)
     root = tree.getroot()
 
+    chain_id = root.findtext("ChainId", default="0")
+    chain_name = root.findtext("ChainName", default="")
+
     stores = []
-    for branch in root.findall(".//Branch"):
+    for store in root.findall(".//Store"):
         stores.append(
             StoreCreate(
-                store_id=int(branch.findtext("StoreID", default="0")),
-                chain_id=branch.findtext("ChainID", default=0),
-                chain_name=branch.findtext("ChainName", default=""),
-                name=branch.findtext("StoreName", default=""),
-                address=branch.findtext("Address", default=""),
-                city=branch.findtext("City", default=0),
-                latitude=branch.findtext("Latitude", default=""),
-                longitude=branch.findtext("Longtitude", default=""),
+                store_id=int(store.findtext("StoreId", default="0")),
+                chain_id=chain_id,
+                chain_name=chain_name,
+                name=store.findtext("StoreName", default=""),
+                address=store.findtext("Address", default=""),
+                city=store.findtext("City", default=""),
+                latitude="",  # not present in this file
+                longitude="",  # not present in this file
             )
         )
     return stores
@@ -37,11 +40,6 @@ def parse_pricefull_xml(file_path: str) -> List[StoreProductCreate]:
 
     items = []
     for item in root.findall(".//Product"):
-        manufacturer_name = item.findtext("ManufactureName", default="")
-        manufacturer_country = item.findtext("ManufactureCountry ", default="")
-        print(
-            f"ManufactureName Name: {manufacturer_name}, Country: {manufacturer_country}"
-        )  # Debug log
         items.append(
             StoreProductCreate(
                 store_id=store_id,
@@ -83,7 +81,6 @@ products = parse_pricefull_xml("price1.xml")
 # print(stores)
 # for store in stores:
 # create_store(db, store)
-print(products)
 for product in products:
     create_store_product(db, product)
 db.close()

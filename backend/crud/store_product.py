@@ -17,8 +17,6 @@ def create_store_product(db: Session, product: StoreProductCreate) -> StoreProdu
     existing = get_store_product_by_code(db, product.item_code, product.store_id)
     if existing:
         return existing
-    print("HERE")
-    print(product.manufacturer_name)
     db_product = StoreProduct(
         store_id=product.store_id,
         item_code=product.item_code,
