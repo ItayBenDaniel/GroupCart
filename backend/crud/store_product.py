@@ -24,6 +24,7 @@ def create_store_product(db: Session, product: StoreProductCreate) -> StoreProdu
         manufacturer_name=product.manufacturer_name,
         manufacturer_country=product.manufacturer_country,
         item_description=product.item_description,
+        unit_quantity=product.unit_quantity,
         quantity_in_package=product.quantity_in_package,
         price=product.price,
         discounted=product.discounted,

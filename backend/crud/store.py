@@ -4,13 +4,22 @@ from backend.models.store import Store
 from backend.schemas.store import StoreCreate
 
 
-def get_store_by_store_id(db: Session, store_id: int) -> Store | None:
-    return db.query(Store).filter(Store.store_id == store_id).first()
+def get_store_by_store_id(
+    db: Session, store_id: int, chain_id: str, subchain_id: str
+) -> Store | None:
+    return (
+        db.query(Store)
+        .filter_by(
+            chain_id=str(chain_id), subchain_id=str(subchain_id), store_id=int(store_id)
+        )
+        .first()
+    )
 
 
 def create_store(db: Session, store: StoreCreate) -> Store:
-    print("WOW")
-    existing = get_store_by_store_id(db, store.store_id)
+    existing = get_store_by_store_id(
+        db, store.store_id, store.chain_id, store.subchain_id
+    )
     if existing:
         print(f"EXISTING {existing}")
         return existing
@@ -19,6 +28,7 @@ def create_store(db: Session, store: StoreCreate) -> Store:
     db_store = Store(
         store_id=store.store_id,
         chain_id=store.chain_id,
+        subchain_id=store.subchain_id,
         chain_name=store.chain_name,
         name=store.name,
         address=store.address,

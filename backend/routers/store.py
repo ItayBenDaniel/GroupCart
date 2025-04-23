@@ -1,12 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.database import get_db
 from backend.schemas.store import Store as StoreSchema
 from backend.schemas.store_product import StoreProduct
 from backend.models.store import Store
 from backend.models.store_product import StoreProduct as StoreProductDB
+from backend import database
 
 router = APIRouter(prefix="/stores", tags=["stores"])
+
+
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @router.get("/", response_model=list[StoreSchema])

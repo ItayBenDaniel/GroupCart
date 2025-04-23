@@ -5,6 +5,7 @@ from backend.scrapper.parser import parse_stores_xml, parse_pricefull_xml
 from backend.crud.store import create_store
 from backend.crud.store_product import create_store_product
 from backend.database import SessionLocal
+from sqlalchemy.orm import Session
 
 
 def extract_file(file_path: str) -> str:
@@ -36,31 +37,45 @@ def process_file(file_path: str):
     xml_path = extract_file(file_path)
 
     if "StoresFull" in file_path:
-        print("Inserting stores")
         stores = parse_stores_xml(xml_path)
-        print(f"STORES {stores}")
         for store in stores:
             create_store(db, store)
 
-    # elif "PriceFull" in file_path:
-    # products = parse_pricefull_xml(xml_path)
-    # for product in products:
-    # create_store_product(db, product)
+    elif "PriceFull" in file_path:
+        products = parse_pricefull_xml(xml_path, db)
+        for product in products:
+            create_store_product(db, product)
 
-    # elif "Price" in file_path:
-    # products = parse_pricefull_xml(xml_path)
-    # for product in products:
-    # Just update price field
-    # create_store_product(db, product)
+    elif "Price" in file_path:
+        products = parse_pricefull_xml(xml_path, db)
+        for product in products:
+            create_store_product(db, product)
 
     db.close()
 
 
 def run_all(folder: str):
-    for file in os.listdir(folder):
-        if file.endswith(".gz"):
-            full_path = os.path.join(folder, file)
-            process_file(full_path)
+
+    files = sorted(os.listdir(folder))  # optional
+
+    # Do stores first
+    for file in files:
+        if file.endswith("gz"):
+            if "StoresFull" in file:
+                print(f"Adding store {file}")
+                process_file(os.path.join(folder, file))
+
+    # Then prices
+    for file in files:
+        if file.endswith("gz"):
+            if "PriceFull" in file or "Price" in file:
+                process_file(os.path.join(folder, file))
+
+    # Then promos (if applicable)
+    for file in files:
+        if file.endswith("gz"):
+            if "PromoFull" in file:
+                process_file(os.path.join(folder, file))
 
 
 run_all("downloads/")

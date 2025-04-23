@@ -4,7 +4,8 @@ from typing import Optional
 
 class StoreBase(BaseModel):
     store_id: int
-    chain_id: int
+    chain_id: str
+    subchain_id: str
     chain_name: str
     name: str
     address: Optional[str] = ""
