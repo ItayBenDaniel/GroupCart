@@ -4,3 +4,9 @@ types-redis
 uvicorn
 pytest
 httpx
+psycopg2
+sqlalchemy
+passlib
+PyJWT
+pydantic[email]
+bcrypt

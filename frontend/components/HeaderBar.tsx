@@ -7,16 +7,16 @@ type HeaderProps = {
 
 export default function HeaderBar({ name = "" }: HeaderProps) {
     return (
-        <View className="flex-col" >
+        <View className="flex-col mt-3" >
             <View className="flex-row items-center justify-between">
                 <TouchableOpacity className="bg-gray-100 rounded-full p-2">
-                    <Ionicons name="menu" size={22} color="black" />
+                    <Ionicons name="menu" size={24} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity className="bg-gray-100 rounded-full p-2">
-                    <Ionicons name="search" size={22} color="black" />
+                    <Ionicons name="search" size={24} color="black" />
                 </TouchableOpacity>
             </View>
-            <View className="mt-5 items-end">
+            <View className="mt-5 mx-5 items-end">
                 <Text className="text-xl font-bold">שלום {name}!</Text>
                 <Text className="text-sm text-gray-500 font-bold">בוא נתחיל לקנות :)</Text>
             </View>

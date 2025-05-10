@@ -66,3 +66,11 @@ def update_user_me(
     db.commit()
     db.refresh(user)
     return user
+
+
+@router.get("/users/{user_id}")
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return {"error": "User not found"}
+    return {"id": user.id, "username": user.username}
