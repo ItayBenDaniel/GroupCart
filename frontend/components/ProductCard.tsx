@@ -1,4 +1,6 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
+import { useState } from "react";
+
 import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
@@ -18,18 +20,19 @@ export default function ProductCard({
     oldPrice,
     isFavorite = false,
 }: Props) {
+    const [favorite, setFavorite] = useState(isFavorite);
     return (
-        <View className="w-[48%] bg-white rounded-xl p-3 mb-4 shadow-sm border border-gray-100">
+        <View className="w-[48%] bg-white rounded-xl p-3 mb-4 mt-3 shadow-sm border border-gray-100">
             {/* Top row: discount + favorite */}
-            <View className="flex-row justify-between items-center mb-2">
+            <View className="flex-row justify-between items-center mb-" >
                 <View className="bg-orange-100 px-2 py-1 rounded-md">
-                    <Text className="text-[10px] text-orange-600 font-interSemi">הנחה 50%</Text>
+                    <Text className="text-sm text-orange-600 font-interSemi">הנחה 50%</Text>
                 </View>
-                <TouchableOpacity>
-                    <Ionicons
-                        name={isFavorite ? "heart" : "heart-outline"}
-                        size={16}
-                        color={isFavorite ? "red" : "gray"}
+                <TouchableOpacity onPress={() => setFavorite(!favorite)}>
+                    <Ionicons className=" rounded-md bg-orange flex-row"
+                        name={favorite ? "heart" : "heart-outline"}
+                        size={20}
+                        color={favorite ? "red" : "gray"}
                     />
                 </TouchableOpacity>
             </View>

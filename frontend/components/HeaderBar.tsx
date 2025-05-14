@@ -8,7 +8,7 @@ type HeaderProps = {
 export default function HeaderBar({ name = "" }: HeaderProps) {
     return (
         <View className="flex-col mt-3" >
-            <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center justify-between mx-3">
                 <TouchableOpacity className="bg-gray-100 rounded-full p-2">
                     <Ionicons name="menu" size={24} color="black" />
                 </TouchableOpacity>
