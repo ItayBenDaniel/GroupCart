@@ -1,7 +1,10 @@
 import gzip
 import zipfile
 import os
-from backend.scrapper.parser import parse_stores_xml, parse_pricefull_xml
+
+# from backend.scrapper.parsers.kingstore import parse_stores_xml, parse_pricefull_xml
+from backend.scrapper.parsers.rami_levi import parse_stores_xml, parse_pricefull_xml
+
 from backend.crud.store import create_store
 from backend.crud.store_product import create_store_product
 from backend.database import SessionLocal
@@ -36,8 +39,8 @@ def process_file(file_path: str):
     db = SessionLocal()
     xml_path = extract_file(file_path)
 
-    if "StoresFull" in file_path:
-        stores = parse_stores_xml(xml_path)
+    if "StoresFull" in file_path or "Stores" in file_path:
+        stores = parse_stores_xml(file_path)
         for store in stores:
             create_store(db, store)
 
@@ -60,22 +63,20 @@ def run_all(folder: str):
 
     # Do stores first
     for file in files:
-        if file.endswith("gz"):
-            if "StoresFull" in file:
-                print(f"Adding store {file}")
-                process_file(os.path.join(folder, file))
+        # if file.endswith("gz"):
+        if "StoresFull" in file or "Stores" in file:
+            print(f"Adding store {file}")
+            process_file(os.path.join(folder, file))
 
-    # Then prices
     for file in files:
         if file.endswith("gz"):
             if "PriceFull" in file or "Price" in file:
                 process_file(os.path.join(folder, file))
 
-    # Then promos (if applicable)
     for file in files:
         if file.endswith("gz"):
             if "PromoFull" in file:
                 process_file(os.path.join(folder, file))
 
 
-run_all("downloads/")
+run_all("downloads/rami_levi/")

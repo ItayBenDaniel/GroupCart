@@ -10,9 +10,11 @@ class StoreProductBase(BaseModel):
     manufacturer_country: Optional[str] = ""
     item_description: Optional[str] = ""
     unit_quantity: Optional[str] = ""
+    unit_of_measure: Optional[str] = ""
     quantity_in_package: Optional[str] = ""
     price: Optional[float] = None
     discounted: bool = False
+    has_image: bool = False
 
 
 class StoreProductCreate(StoreProductBase):

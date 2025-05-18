@@ -8,8 +8,10 @@ type Props = {
     name: string;
     quantity: string;
     price: string;
+    unit_of_measure: string;
     oldPrice?: string;
     isFavorite?: boolean;
+    onPress?: () => void;
 };
 
 export default function ProductCard({
@@ -17,12 +19,14 @@ export default function ProductCard({
     name,
     quantity,
     price,
+    unit_of_measure,
     oldPrice,
     isFavorite = false,
+    onPress,
 }: Props) {
     const [favorite, setFavorite] = useState(isFavorite);
     return (
-        <View className="w-[48%] bg-white rounded-xl p-3 mb-4 mt-3 shadow-sm border border-gray-100">
+        <TouchableOpacity onPress={onPress} activeOpacity={0.9} className="w-[48%] bg-white rounded-xl p-3 mb-4 mt-3 shadow-sm border border-gray-100">
             {/* Top row: discount + favorite */}
             <View className="flex-row justify-between items-center mb-" >
                 <View className="bg-orange-100 px-2 py-1 rounded-md">
@@ -42,15 +46,15 @@ export default function ProductCard({
 
             {/* Title */}
             <Text className="text-xs text-right leading-4 font-interSemi">{name}</Text>
-            <Text className="text-[10px] text-gray-500 text-right mt-1">{quantity}</Text>
+            <Text className="text-[10px] text-gray-500 text-right mt-1">{unit_of_measure}</Text>
 
             {/* Price */}
-            <View className="flex-row items-center justify-end mt-1 space-x-2 rtl:space-x-reverse">
+            <View className="flex-row items-center justify-end mt-1 space-x-2 gap-x-2 rtl:space-x-reverse">
                 <Text className="text-base font-interBold text-black">₪ {price}</Text>
                 {oldPrice && (
                     <Text className="text-xs text-gray-400 line-through">₪ {oldPrice}</Text>
                 )}
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }
