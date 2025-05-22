@@ -1,30 +1,74 @@
-import { useEffect, useState } from "react";
-import { Text, View } from 'react-native';
+// screens/HomeScreen.tsx
+import React, { useEffect, useState } from "react";
+import { FlatList, View, ActivityIndicator } from "react-native";
+import * as NavigationBar from "expo-navigation-bar";
+
 import HeaderBar from "../components/HeaderBar";
 import PromoCard from "../components/PromoCard";
 import CategoriesBar from "../components/CategoryBar";
-
-import axios from "axios";
+import ProductCard from "../components/ProductCard";
+import BottomNav from "../components/BottomNav";
+import ProductModal from "../components/ProductModal";
+import useHomeScreenData, { StoreProduct } from "../hooks/useHomeScreenData";
+import LottieView from "lottie-react-native";
 
 export default function HomeScreen() {
-    const [username, setUsername] = useState("");
+    const { username, randomProducts, loading } = useHomeScreenData();
+    const [selectedProduct, setSelectedProduct] = useState<StoreProduct | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        axios.get("http://10.100.102.9:8002/users/users/1") // replace with correct ID and IP
-            .then((res) => {
-                setUsername(res.data.username);
-                console.log(res.data.username);
-            })
-            .catch((err) => {
-                console.error("Failed to fetch user", err);
-            });
+        NavigationBar.setPositionAsync("absolute");
+        NavigationBar.setBackgroundColorAsync("#ffffff01");
     }, []);
 
+    const handleProductPress = (product: StoreProduct) => {
+        setSelectedProduct(product);
+        setModalVisible(true);
+    };
+
+    if (loading) {
+        return (
+            <View className="flex-1 justify-center items-center bg-white">
+                <LottieView
+                    source={require("../assets/lottie/loading.json")}
+                    autoPlay
+                    loop
+                    style={{ width: 300, height: 300 }}
+                />
+            </View>
+        );
+    }
     return (
-        <View>
+        <View className="flex-1 relative bg-white">
             <HeaderBar name={username} />
-            <PromoCard title="10% הנחה על כל הקטגוריה!" image={require("../assets/images/react-logo.png")} />
+            {/* <PromoCard title="10% הנחה על כל הקטגוריה!" image={require("../assets/images/react-logo.png")} /> */}
             <CategoriesBar />
+            <BottomNav />
+            <FlatList
+                data={randomProducts}
+                keyExtractor={(_, index) => index.toString()}
+                numColumns={2}
+                contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 16 }}
+                columnWrapperStyle={{ justifyContent: "space-between" }}
+                renderItem={({ item }) => (
+                    <ProductCard
+                        image={{ uri: `http://10.100.102.9:8002/static/icons/${item.item_code}.png` }}
+                        name={item.name}
+                        quantity={item.quantity}
+                        unit_of_measure={item.unit_of_measure}
+                        price={item.price.toString()}
+                        oldPrice={(item.price + 5).toString()}
+                        onPress={() => handleProductPress(item)}
+                    />
+                )}
+            />
+            <ProductModal
+                visible={modalVisible}
+                product={selectedProduct}
+                onClose={() => setModalVisible(false)}
+            />
+
         </View>
     );
 }

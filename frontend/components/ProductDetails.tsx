@@ -1,9 +1,11 @@
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-
+import axios from "axios";
+import { Alert } from "react-native";
+import BuyButton from "./buttons/BuyButton"
 
 type Props = {
+    product_id: number;
     image: any;
     name: string;
     quantity: string;
@@ -14,6 +16,7 @@ type Props = {
     onClose?: () => void;
 };
 export default function ProductDetails({
+    product_id,
     image,
     name,
     quantity,
@@ -23,13 +26,27 @@ export default function ProductDetails({
     isFavorite = false,
     onClose,
 }: Props) {
+    console.log("PRODUCT ID2 ", product_id)
 
     const storeOptions = [
         { name: "קינגסטור ", price: "7.40", image: "kingstore" },
         { name: "שופרסל דיל", price: "7.40", image: "kingstore" },
         { name: "רמי לוי", price: "7.30", image: "rami_levi" },
     ];
+    const handleAddToCart = async () => {
+        console.log("PRODUCT ID3 ", product_id)
+        try {
+            const res = await axios.post("http://10.100.102.9:8002/cart/", {
+                store_product_id: product_id,
+                quantity: 1,
+            });
 
+            Alert.alert("המוצר נוסף לסל 🎉");
+        } catch (err) {
+            console.error("Failed to add to cart:", err);
+            Alert.alert("שגיאה", "לא ניתן להוסיף את המוצר לסל");
+        }
+    };
     return (
         <View className="flex-1 bg-white ">
             <TouchableOpacity onPress={onClose} className="absolute top-10 left-4 z-50">
@@ -68,11 +85,8 @@ export default function ProductDetails({
             </ScrollView>
 
             {/* Add to cart button */}
-            <View className="px-4 mt-10 pb-6">
-                <TouchableOpacity className="bg-app_orange py-3 rounded-full">
-                    <Text className="text-white font-interBold text-center text-base">הוסף לסל</Text>
-                </TouchableOpacity>
-            </View>
+
+            <BuyButton button_text="הוסף לסל" handleAddToCart={handleAddToCart}></BuyButton>
         </View>
     );
 }

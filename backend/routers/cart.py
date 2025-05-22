@@ -3,10 +3,11 @@ from sqlalchemy.orm import Session
 
 from backend.database import SessionLocal
 from backend.models.cart import CartDB
-from backend.models.products import Product
+from backend.models.store_product import StoreProduct
 from backend.models.users import User
-from backend.schemas.cart import CartItemCreate, CartItemUpdate, CartItem
+from backend.schemas.cart import CartItemCreate, CartItemUpdate, CartItem, CartProduct
 from backend.core.utils import get_current_user
+from typing import List
 
 router = APIRouter(prefix="/cart", tags=["cart"])
 
@@ -24,26 +25,34 @@ def get_db():
 def add_to_cart(
     item: CartItemCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user),
+    # user_id: int = Depends(get_current_user),
 ):
+    print("HERE1")
     if item.quantity <= 0:
         raise HTTPException(
             status_code=400, detail="Amount added needs to be greater than 0"
         )
+    print("HERE2")
+
     # Optional: Check that product exists
-    product = db.query(Product).filter(Product.id == item.product_id).first()
+    product = (
+        db.query(StoreProduct).filter(StoreProduct.id == item.store_product_id).first()
+    )
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    print("HERE3")
 
     # Checking if item exists in cart
     existing_item = (
         db.query(CartDB)
-        .filter_by(user_id=user_id, product_id=item.product_id, is_deleted=False)
+        .filter_by(user_id=1, store_product_id=item.store_product_id, is_deleted=False)
         .first()
     )
-    user = db.query(User).filter(User.id == user_id).first()
+
+    user = db.query(User).filter(User.id == 1).first()
     if not user.family_id:
         raise HTTPException(status_code=400, detail="User must belong to a family")
+    print("HERE5")
 
     if existing_item:
         existing_item.quantity += item.quantity
@@ -52,8 +61,8 @@ def add_to_cart(
         return existing_item
     # Create cart item
     db_item = CartDB(
-        user_id=user_id,
-        product_id=item.product_id,
+        user_id=1,
+        store_product_id=item.store_product_id,
         family_id=user.family_id,
         quantity=item.quantity,
         purchased=False,
@@ -65,10 +74,42 @@ def add_to_cart(
 
 
 @router.get("/", response_model=list[CartItem])
-def get_user_cart(
-    db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
+def get_user_cart(db: Session = Depends(get_db)):
+    return db.query(CartDB).filter(CartDB.user_id == 1).all()
+
+
+@router.get("/full", response_model=list)
+def get_user_cart_full(
+    db: Session = Depends(get_db),
 ):
-    return db.query(CartDB).filter(CartDB.user_id == user_id).all()
+    cart_items = (
+        db.query(CartDB).filter(CartDB.user_id == 1, CartDB.is_deleted == False).all()
+    )
+
+    results = []
+    for item in cart_items:
+        product_data = (
+            db.query(StoreProduct)
+            .filter(StoreProduct.id == item.store_product_id)
+            .first()
+        )
+        product_dict = {
+            "id": product_data.id,
+            "name": product_data.name,
+            "price": product_data.price,
+            "item_code": product_data.item_code,
+            "unit_of_measure": product_data.unit_of_measure,
+            "quantity": item.quantity,  # Add the quantity from cart
+        }
+        results.append(product_dict)
+
+    return results
+
+
+@router.get("/full2")
+def get_user_cart_full():
+
+    print("WOW")
 
 
 @router.get("/{family_id}", response_model=list[CartItem])

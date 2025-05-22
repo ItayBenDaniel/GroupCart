@@ -21,12 +21,12 @@ def get_db():
 def create_purchase(
     purchase_data: PurchaseCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user),
+    # user_id: int = Depends(get_current_user),
 ):
     if not purchase_data.items:
         raise HTTPException(status_code=400, detail="No items to purchase")
-
-    purchase = Purchase(user_id=user_id)
+    print(f"PURCHASE DATA IS {purchase_data}")
+    purchase = Purchase(user_id=1)
     db.add(purchase)
     db.flush()  # Get purchase.id before inserting items
 

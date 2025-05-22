@@ -22,8 +22,8 @@ class PurchaseItem(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     purchase_id = Column(Integer, ForeignKey("purchases.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
+    product_id = Column(Integer, ForeignKey("store_products.id"))
     quantity = Column(Integer)
 
     purchase = relationship("Purchase", back_populates="items")
-    product = relationship("Product")
+    product = relationship("StoreProduct")

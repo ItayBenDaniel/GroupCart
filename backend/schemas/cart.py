@@ -1,9 +1,10 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from backend.schemas.store_product import StoreProduct
 
 
 class CartBase(BaseModel):
-    product_id: int
+    store_product_id: int
     quantity: int
 
 
@@ -21,3 +22,7 @@ class CartItem(CartBase):
     user_id: int
     purchased: bool
     model_config = ConfigDict(from_attributes=True)
+
+
+class CartProduct(StoreProduct):
+    quantity: int

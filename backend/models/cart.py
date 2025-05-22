@@ -10,11 +10,11 @@ class CartDB(Base):
     family_id = Column(
         Integer, ForeignKey("families.id"), nullable=False
     )  # which family the cart belongs to
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    store_product_id = Column(Integer, ForeignKey("store_products.id"))
     quantity = Column(Integer, default=1)
     purchased = Column(Boolean, default=False)
     is_deleted = Column(Boolean, default=False)
 
     user = relationship("User", back_populates="cart_items")
     family = relationship("Family", back_populates="cart_items")
-    product = relationship("Product")
+    store_product = relationship("StoreProduct")
