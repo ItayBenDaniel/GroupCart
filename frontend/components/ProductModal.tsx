@@ -18,7 +18,7 @@ export default function ProductModal({ visible, product, onClose }: Props) {
         <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
             <ProductDetails
                 product_id={product.id}
-                image={{ uri: `http://10.100.102.9:8002/static/icons/${product.item_code}.png` }}
+                image={{ uri: `http://192.168.68.52:8002/static/icons/${product.item_code}.png` }}
                 name={product.name}
                 quantity={product.quantity}
                 unit_of_measure={product.unit_of_measure}

@@ -14,7 +14,7 @@ export default function BottomNav() {
         <View className="flex-row z-10 justify-around items-center py-2 bg-white rounded-t-3xl border-t border-gray-200 absolute bottom-0 left-0 right-0" style={{ paddingBottom: insets.bottom || 12 }}>
             <NavItem icon="home" label="בית" active={active} setActive={setActive} onPress={() => router.push("/")} />
             <NavItem icon="cart" label="סל" active={active} setActive={setActive} onPress={() => router.push("/cart")} />
-            <NavItem icon="person" label="פרופיל" active={active} setActive={setActive} onPress={() => { }} />
+            <NavItem icon="person" label="פרופיל" active={active} setActive={setActive} onPress={() => router.push("/signup")} />
         </View>
     );
 }

@@ -5,6 +5,7 @@ from typing import List
 from backend.models.purchase import Purchase, PurchaseItem
 from backend.schemas.purchase import PurchaseCreate, PurchaseOut
 from backend import database
+from backend.models.cart import CartDB
 
 router = APIRouter(prefix="/purchases", tags=["Purchases"])
 
@@ -21,15 +22,13 @@ def get_db():
 def create_purchase(
     purchase_data: PurchaseCreate,
     db: Session = Depends(get_db),
-    # user_id: int = Depends(get_current_user),
+    user_id: int = Depends(get_current_user),
 ):
     if not purchase_data.items:
         raise HTTPException(status_code=400, detail="No items to purchase")
-    print(f"PURCHASE DATA IS {purchase_data}")
-    purchase = Purchase(user_id=1)
+    purchase = Purchase(user_id=user_id)
     db.add(purchase)
     db.flush()  # Get purchase.id before inserting items
-
     for item in purchase_data.items:
         db.add(
             PurchaseItem(
@@ -38,7 +37,8 @@ def create_purchase(
                 quantity=item.quantity,
             )
         )
-
+    print("HERE DELETE")
+    db.query(CartDB).filter(CartDB.user_id == user_id).delete()
     db.commit()
     db.refresh(purchase)
     return purchase

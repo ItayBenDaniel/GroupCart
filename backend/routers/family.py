@@ -51,14 +51,14 @@ def get_my_family(
 
 @router.post("/{family_id}/join", response_model=FamilyOut)
 def join_family(
+    email: str,
     family_id: int,
     db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user),
 ):
     family = db.query(Family).filter(Family.id == family_id).first()
     if not family:
         raise HTTPException(status_code=404, detail="Family not found")
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.email == email).first()
     user.family_id = family_id
     db.commit()
     db.refresh(user)

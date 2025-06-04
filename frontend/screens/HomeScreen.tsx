@@ -44,7 +44,6 @@ export default function HomeScreen() {
             <HeaderBar name={username} />
             {/* <PromoCard title="10% הנחה על כל הקטגוריה!" image={require("../assets/images/react-logo.png")} /> */}
             <CategoriesBar />
-            <BottomNav />
             <FlatList
                 data={randomProducts}
                 keyExtractor={(_, index) => index.toString()}
@@ -53,7 +52,7 @@ export default function HomeScreen() {
                 columnWrapperStyle={{ justifyContent: "space-between" }}
                 renderItem={({ item }) => (
                     <ProductCard
-                        image={{ uri: `http://10.100.102.9:8002/static/icons/${item.item_code}.png` }}
+                        image={{ uri: `http://192.168.68.52:8002/static/icons/${item.item_code}.png` }}
                         name={item.name}
                         quantity={item.quantity}
                         unit_of_measure={item.unit_of_measure}

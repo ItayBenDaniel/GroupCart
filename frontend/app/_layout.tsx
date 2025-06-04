@@ -1,6 +1,8 @@
-import { Slot, SplashScreen } from "expo-router";
+import { Slot, SplashScreen, Stack } from "expo-router";
+import { View } from "react-native"
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import BottomNav from "../components/BottomNav";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -17,5 +19,14 @@ export default function RootLayout() {
 
   if (!loaded) return null;
 
-  return <Slot />;
+  return (
+    <>
+      <View className="flex-1 bg-white" >
+
+        <Stack screenOptions={{ headerShown: false }} />
+        <BottomNav />
+      </View>
+
+    </>
+  );
 }

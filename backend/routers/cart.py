@@ -25,14 +25,12 @@ def get_db():
 def add_to_cart(
     item: CartItemCreate,
     db: Session = Depends(get_db),
-    # user_id: int = Depends(get_current_user),
+    user_id: int = Depends(get_current_user),
 ):
-    print("HERE1")
     if item.quantity <= 0:
         raise HTTPException(
             status_code=400, detail="Amount added needs to be greater than 0"
         )
-    print("HERE2")
 
     # Optional: Check that product exists
     product = (
@@ -40,19 +38,19 @@ def add_to_cart(
     )
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    print("HERE3")
 
     # Checking if item exists in cart
     existing_item = (
         db.query(CartDB)
-        .filter_by(user_id=1, store_product_id=item.store_product_id, is_deleted=False)
+        .filter_by(
+            user_id=user_id, store_product_id=item.store_product_id, is_deleted=False
+        )
         .first()
     )
 
-    user = db.query(User).filter(User.id == 1).first()
+    user = db.query(User).filter(User.id == user_id).first()
     if not user.family_id:
         raise HTTPException(status_code=400, detail="User must belong to a family")
-    print("HERE5")
 
     if existing_item:
         existing_item.quantity += item.quantity
@@ -61,7 +59,7 @@ def add_to_cart(
         return existing_item
     # Create cart item
     db_item = CartDB(
-        user_id=1,
+        user_id=user_id,
         store_product_id=item.store_product_id,
         family_id=user.family_id,
         quantity=item.quantity,
@@ -74,16 +72,23 @@ def add_to_cart(
 
 
 @router.get("/", response_model=list[CartItem])
-def get_user_cart(db: Session = Depends(get_db)):
-    return db.query(CartDB).filter(CartDB.user_id == 1).all()
+def get_user_cart(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    return db.query(CartDB).filter(CartDB.user_id == user_id).all()
 
 
 @router.get("/full", response_model=list)
 def get_user_cart_full(
     db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
 ):
+    user = db.query(User).filter(User.id == user_id).first()
     cart_items = (
-        db.query(CartDB).filter(CartDB.user_id == 1, CartDB.is_deleted == False).all()
+        db.query(CartDB)
+        .filter(CartDB.family_id == user.family_id, CartDB.is_deleted == False)
+        .all()
     )
 
     results = []
@@ -104,12 +109,6 @@ def get_user_cart_full(
         results.append(product_dict)
 
     return results
-
-
-@router.get("/full2")
-def get_user_cart_full():
-
-    print("WOW")
 
 
 @router.get("/{family_id}", response_model=list[CartItem])

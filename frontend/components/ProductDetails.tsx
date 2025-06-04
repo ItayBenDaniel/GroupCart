@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { Alert } from "react-native";
 import BuyButton from "./buttons/BuyButton"
+import api from "../lib/axios";
 
 type Props = {
     product_id: number;
@@ -36,7 +37,7 @@ export default function ProductDetails({
     const handleAddToCart = async () => {
         console.log("PRODUCT ID3 ", product_id)
         try {
-            const res = await axios.post("http://10.100.102.9:8002/cart/", {
+            const res = await api.post("/cart/", {
                 store_product_id: product_id,
                 quantity: 1,
             });
@@ -77,7 +78,7 @@ export default function ProductDetails({
                         <Text className="font-interSemi text-xs text-center">{store.name}</Text>
                         <Text className="text-black font-interBold mt-1 text-sm">₪ {store.price}</Text>
                         <Image
-                            source={{ uri: `http://10.100.102.9:8002/static/icons/${store.image}.png` }}
+                            source={{ uri: `http://192.168.68.52:8002/static/icons/${store.image}.png` }}
                             className="w-20 h-20 object-contain mt-2"
                         />
                     </TouchableOpacity>

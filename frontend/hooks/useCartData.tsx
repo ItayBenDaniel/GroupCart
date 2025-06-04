@@ -1,6 +1,7 @@
 // hooks/useCartData.ts
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../lib/axios";
 
 export type CartItem = {
     id: number;
@@ -18,7 +19,7 @@ export default function useCartData() {
     useEffect(() => {
         const fetchCart = async () => {
             try {
-                const res = await axios.get("http://10.100.102.9:8002/cart/full");
+                const res = await api.get("/cart/full");
                 setCartItems(res.data);
             } catch (err) {
                 console.error("Failed to load cart", err);
@@ -30,5 +31,5 @@ export default function useCartData() {
         fetchCart();
     }, []);
 
-    return { cartItems, loading };
+    return { cartItems, setCartItems, loading };
 }

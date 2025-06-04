@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../lib/axios";
 
 export type StoreProduct = {
     id: number;
@@ -21,7 +22,7 @@ export default function useHomeScreenData() {
         setLoading(true);
 
         // Create promises for both API calls
-        const userPromise = axios.get("http://10.100.102.9:8002/users/users/1")
+        const userPromise = api.get("/users/users/1")
             .then((res) => {
                 if (isMounted) setUsername(res.data.username);
             })
@@ -29,7 +30,7 @@ export default function useHomeScreenData() {
                 if (isMounted) console.error("Failed to fetch user", err);
             });
 
-        const productsPromise = axios.get("http://10.100.102.9:8002/store_products/random/10")
+        const productsPromise = api.get("/store_products/random/10")
             .then((res) => {
                 if (isMounted) setRandomProducts(res.data);
             })
