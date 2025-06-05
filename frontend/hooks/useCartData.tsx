@@ -10,6 +10,7 @@ export type CartItem = {
     item_code: string;
     quantity: string;
     unit_of_measure: string;
+    added_by: string;
 };
 
 export default function useCartData() {

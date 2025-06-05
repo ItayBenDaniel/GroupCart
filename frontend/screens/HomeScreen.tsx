@@ -11,7 +11,7 @@ import BottomNav from "../components/BottomNav";
 import ProductModal from "../components/ProductModal";
 import useHomeScreenData, { StoreProduct } from "../hooks/useHomeScreenData";
 import LottieView from "lottie-react-native";
-
+import { checkTokenExpired } from "../lib/checkTokenExpired";
 export default function HomeScreen() {
     const { username, randomProducts, loading } = useHomeScreenData();
     const [selectedProduct, setSelectedProduct] = useState<StoreProduct | null>(null);
@@ -20,6 +20,8 @@ export default function HomeScreen() {
     useEffect(() => {
         NavigationBar.setPositionAsync("absolute");
         NavigationBar.setBackgroundColorAsync("#ffffff01");
+
+        checkTokenExpired();
     }, []);
 
     const handleProductPress = (product: StoreProduct) => {

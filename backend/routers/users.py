@@ -70,7 +70,8 @@ def update_user_me(
 
 @router.get("/users/{user_id}")
 def get_user(user_id: int, db: Session = Depends(get_db)):
+    print(f"USER ID IS {user_id}")
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         return {"error": "User not found"}
-    return {"id": user.id, "username": user.username}
+    return user

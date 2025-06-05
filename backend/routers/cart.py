@@ -98,13 +98,21 @@ def get_user_cart_full(
             .filter(StoreProduct.id == item.store_product_id)
             .first()
         )
+        added_by_user = db.query(User).filter(User.id == item.user_id).first()
+        print(f"item is {item}")
+        print(f"user is {added_by_user.username}")
+        if not added_by_user:
+            added_by_username = "hh"
+        else:
+            added_by_username = added_by_user.username
         product_dict = {
             "id": product_data.id,
             "name": product_data.name,
             "price": product_data.price,
             "item_code": product_data.item_code,
             "unit_of_measure": product_data.unit_of_measure,
-            "quantity": item.quantity,  # Add the quantity from cart
+            "quantity": item.quantity,
+            "added_by": added_by_username,
         }
         results.append(product_dict)
 

@@ -17,13 +17,16 @@ api_key_scheme = APIKeyHeader(name="Authorization")
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
 
 def create_jwt_token(user_id: int) -> str:
     expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"sub": str(user_id), "exp": expire}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
 
 def decode_jwt_token(token: str) -> dict:
     try:
@@ -32,7 +35,8 @@ def decode_jwt_token(token: str) -> dict:
         return None
     except jwt.InvalidTokenError:
         return None
-    
+
+
 def get_current_user(token: str = Security(api_key_scheme)) -> int:
     if token is None or not token.startswith("Bearer "):
         raise HTTPException(
@@ -41,7 +45,7 @@ def get_current_user(token: str = Security(api_key_scheme)) -> int:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    actual_token = token[len("Bearer "):]  # Strip 'Bearer ' prefix
+    actual_token = token[len("Bearer ") :]  # Strip 'Bearer ' prefix
     payload = decode_jwt_token(actual_token)
 
     if not payload or "sub" not in payload:
@@ -51,6 +55,4 @@ def get_current_user(token: str = Security(api_key_scheme)) -> int:
             headers={"WWW-Authenticate": "Bearer"},
         )
     id = int(payload["sub"])
-    print("Current user id:")
-    print(id)
     return id
