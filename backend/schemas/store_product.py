@@ -24,3 +24,14 @@ class StoreProductCreate(StoreProductBase):
 class StoreProduct(StoreProductBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+
+class StoreProductOut(BaseModel):
+    id: int
+    name: str
+    item_code: str
+    price: Optional[float]
+    unit_of_measure: Optional[str]
+
+    class Config:
+        from_attributes = True

@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from backend.core.utils import get_current_user
 from typing import List
 from backend.models.purchase import Purchase, PurchaseItem
 from backend.schemas.purchase import PurchaseCreate, PurchaseOut
 from backend import database
 from backend.models.cart import CartDB
+from backend.models.users import User
 
 router = APIRouter(prefix="/purchases", tags=["Purchases"])
 
@@ -26,7 +27,10 @@ def create_purchase(
 ):
     if not purchase_data.items:
         raise HTTPException(status_code=400, detail="No items to purchase")
-    purchase = Purchase(user_id=user_id)
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user.family_id:
+        raise HTTPException(status_code=400, detail="User must belong to a family")
+    purchase = Purchase(family_id=user.family_id)
     db.add(purchase)
     db.flush()  # Get purchase.id before inserting items
     for item in purchase_data.items:
@@ -37,8 +41,7 @@ def create_purchase(
                 quantity=item.quantity,
             )
         )
-    print("HERE DELETE")
-    db.query(CartDB).filter(CartDB.user_id == user_id).delete()
+    db.query(CartDB).filter(CartDB.family_id == user.family_id).delete()
     db.commit()
     db.refresh(purchase)
     return purchase
@@ -48,7 +51,18 @@ def create_purchase(
 def get_my_purchases(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
 ):
-    return db.query(Purchase).filter(Purchase.user_id == user_id).all()
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user.family_id:
+        raise HTTPException(status_code=400, detail="User must belong to a family")
+    print("YAYAYYAY")
+    purchases = (
+        db.query(Purchase)
+        .options(joinedload(Purchase.items).joinedload(PurchaseItem.product))
+        .filter(Purchase.family_id == user.family_id)
+        .all()
+    )
+    print(f"PURCHASES ARE {purchases}")
+    return purchases
 
 
 @router.delete("/{purchase_id}")

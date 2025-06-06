@@ -8,10 +8,8 @@ class Purchase(Base):
     __tablename__ = "purchases"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    family_id = Column(Integer, ForeignKey("families.id"), nullable=False)
     purchased_at = Column(DateTime, default=datetime.now)
-
-    user = relationship("User", back_populates="purchases")
     items = relationship(
         "PurchaseItem", back_populates="purchase", cascade="all, delete-orphan"
     )
