@@ -102,6 +102,16 @@ export default function CartScreen() {
         0
     );
 
+    const markAsPurchased = async (id: number) => {
+        try {
+            await api.patch(`/cart/${id}/mark_purchased`);
+            const updated = await api.get("/cart/full");
+            setCartItems(updated.data);
+            fetchHistory(); // Optional if you want to log this too
+        } catch (err) {
+            console.error("Failed to mark as purchased", err);
+        }
+    };
 
 
     const updateQuantity = async (id: number, change: number) => {
@@ -230,6 +240,12 @@ export default function CartScreen() {
 
                                     <TouchableOpacity onPress={() => deleteItem(item.id)}>
                                         <Text className="text-s text-red-500 ml-5">🗑️</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => markAsPurchased(item.id)}
+                                        className="ml-2 bg-green-500 px-2 py-1 rounded"
+                                    >
+                                        <Text className="text-white text-xs">נרכש</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}

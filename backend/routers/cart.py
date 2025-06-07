@@ -119,7 +119,11 @@ def get_user_cart_full(
     user = db.query(User).filter(User.id == user_id).first()
     cart_items = (
         db.query(CartDB)
-        .filter(CartDB.family_id == user.family_id, CartDB.is_deleted == False)
+        .filter(
+            CartDB.family_id == user.family_id,
+            CartDB.is_deleted == False,
+            CartDB.purchased == False,
+        )
         .all()
     )
 
@@ -261,3 +265,22 @@ def delete_cart_item(
     db.commit()
 
     return {"detail": "Item deleted"}
+
+
+@router.patch("/{id}/mark_purchased")
+def mark_item_as_purchased(
+    id: int,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    item = (
+        db.query(CartDB)
+        .filter(CartDB.store_product_id == id, CartDB.user_id == user_id)
+        .first()
+    )
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    item.purchased = True
+    db.commit()
+    return {"detail": "Marked as purchased"}
