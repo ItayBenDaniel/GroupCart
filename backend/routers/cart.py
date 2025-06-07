@@ -5,9 +5,12 @@ from backend.database import SessionLocal
 from backend.models.cart import CartDB
 from backend.models.store_product import StoreProduct
 from backend.models.users import User
-from backend.schemas.cart import CartItemCreate, CartItemUpdate, CartItem, CartProduct
+from backend.schemas.cart_change import CartChangeOut
+from backend.schemas.cart import CartItemCreate, CartItemUpdate, CartItem
 from backend.core.utils import get_current_user
 from typing import List
+from backend.models.cart_change import CartChange
+from datetime import datetime
 
 router = APIRouter(prefix="/cart", tags=["cart"])
 
@@ -56,6 +59,20 @@ def add_to_cart(
         existing_item.quantity += item.quantity
         db.commit()
         db.refresh(existing_item)
+        db.add(
+            CartChange(
+                family_id=user.family_id,
+                username=user.username,
+                action="update",
+                name=product.name,
+                store_product_id=item.store_product_id,
+                quantity=existing_item.quantity,
+                previous_quantity=existing_item.quantity - item.quantity,
+                timestamp=datetime.utcnow(),
+                undone=0,
+            )
+        )
+        db.commit()
         return existing_item
     # Create cart item
     db_item = CartDB(
@@ -68,6 +85,21 @@ def add_to_cart(
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
+
+    db.add(
+        CartChange(
+            family_id=user.family_id,
+            username=user.username,
+            action="add",
+            name=product.name,
+            store_product_id=item.store_product_id,
+            quantity=item.quantity,
+            previous_quantity=None,
+            timestamp=datetime.utcnow(),
+            undone=0,
+        )
+    )
+    db.commit()
     return db_item
 
 
@@ -141,50 +173,91 @@ def get_family_cart(
     return items
 
 
-@router.patch("/{item_id}", response_model=CartItem)
+@router.patch("/{id}", response_model=CartItem)
 def update_cart_item(
-    item_id: int,
-    updates: CartItemUpdate,
+    id: int,
+    item_update: CartItemUpdate,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
-    if updates.quantity < 0:
-        raise HTTPException(
-            status_code=400, detail="Amount added needs to be greater than 0"
-        )
+    print("HERE!")
+    user = db.query(User).filter(User.id == user_id).first()
+    print(f"ID :{id} - user ID {user_id} - family ID {user.family_id}")
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    print(f"ID :{id} - user ID {user_id} - family ID {user.family_id}")
 
     item = (
-        db.query(CartDB).filter(CartDB.id == item_id, CartDB.user_id == user_id).first()
+        db.query(CartDB)
+        .filter(CartDB.store_product_id == id, CartDB.family_id == user.family_id)
+        .first()
     )
-
     if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-
-    if updates.quantity == 0:
-        item.is_deleted = True
-    if updates.quantity is not None:
-        item.quantity = updates.quantity
-    if updates.purchased is not None:
-        item.purchased = updates.purchased
-
+        raise HTTPException(status_code=404, detail="Cart item not found")
+    print(f"ITEM {item}")
+    old_quantity = item.quantity
+    item.quantity = item_update.quantity
+    if not item.quantity:
+        raise HTTPException(status_code=400, detail="No quantity added")
+    print("HERE!2")
     db.commit()
     db.refresh(item)
+    user = db.query(User).filter(User.id == user_id).first()
+    product = db.query(StoreProduct).filter(StoreProduct.id == id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    # Log the update
+    db.add(
+        CartChange(
+            family_id=item.family_id,
+            name=product.name,
+            username=user.username,
+            action="update",
+            store_product_id=item.store_product_id,
+            quantity=item.quantity,
+            previous_quantity=old_quantity,
+            timestamp=datetime.utcnow(),
+            undone=0,
+        )
+    )
+    db.commit()
+    print("HERE!3")
     return item
 
 
-@router.delete("/{item_id}")
+@router.delete("/{id}")
 def delete_cart_item(
-    item_id: int,
+    id: int,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
     item = (
-        db.query(CartDB).filter(CartDB.id == item_id, CartDB.user_id == user_id).first()
+        db.query(CartDB)
+        .filter(CartDB.store_product_id == id, CartDB.user_id == user_id)
+        .first()
     )
-
     if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Cart item not found")
+    user = db.query(User).filter(User.id == user_id).first()
+    product = db.query(StoreProduct).filter(StoreProduct.id == id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    # Log the delete before removing
+    db.add(
+        CartChange(
+            family_id=item.family_id,
+            username=user.username,
+            name=product.name,
+            action="delete",
+            store_product_id=item.store_product_id,
+            quantity=item.quantity,
+            previous_quantity=item.quantity,
+            timestamp=datetime.utcnow(),
+            undone=0,
+        )
+    )
 
     db.delete(item)
     db.commit()
-    return {"detail": "Item removed from cart"}
+
+    return {"detail": "Item deleted"}

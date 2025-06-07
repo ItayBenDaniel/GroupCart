@@ -7,14 +7,35 @@ import api from "../lib/axios";
 import { useState } from "react";
 import { CartItem } from "../hooks/useCartData";
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect } from "react";
+import dayjs from "dayjs";
 
 export default function CartScreen() {
+    type ActionHistoryItem = {
+        username: string;
+        name: string,
+        action: string;
+        quantity: number;
+        timestamp: string;
+    };
     const { cartItems, setCartItems, loading } = useCartData();
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
-    const [undoStack, setUndoStack] = useState<CartItem[][]>([]);
-    const [redoStack, setRedoStack] = useState<CartItem[][]>([]);
     const [showHistory, setShowHistory] = useState(false);
-    const [actionHistory, setActionHistory] = useState<CartAction[]>([]);
+    const [actionHistory, setActionHistory] = useState<ActionHistoryItem[]>([]);
+
+    const fetchHistory = async () => {
+        try {
+            console.log("HERE!123")
+            const res = await api.get("/history/");
+            console.log("HERE!1234 ")
+            setActionHistory(res.data);
+        } catch (err) {
+            console.error("Failed to fetch history:", err);
+        }
+    };
+    useEffect(() => {
+        fetchHistory();
+    }, []);
 
 
     if (loading) {
@@ -54,79 +75,60 @@ export default function CartScreen() {
 
 
 
+    const undoLastChange = async () => {
+        try {
+            await api.post("/history/undo");
+            await fetchHistory();
+            const updatedCart = await api.get("/cart/full");
+            setCartItems(updatedCart.data);
+        } catch (err) {
+            console.error("Undo failed:", err);
+        }
+    };
+
+    const redoLastUndo = async () => {
+        try {
+            await api.post("/history/redo");
+            await fetchHistory();
+            const updatedCart = await api.get("/cart/full");
+            setCartItems(updatedCart.data);
+        } catch (err) {
+            console.error("Redo failed:", err);
+        }
+    };
+
     const totalPrice = cartItems.reduce(
         (sum, item) => sum + item.price * parseInt(item.quantity),
         0
     );
 
-    const pushToUndoStack = () => {
-        setUndoStack(prev => [...prev, cartItems]);
-        setRedoStack([]); // clear redo stack on any new action
-    };
 
-    const undoLastChange = () => {
-        if (undoStack.length === 0) return;
 
-        const last = undoStack[undoStack.length - 1];
-        setUndoStack(prev => prev.slice(0, -1));
-        setRedoStack(prev => [...prev, cartItems]);
-        setCartItems(last);
-
-        // Remove last visible action from log
-        setActionHistory(prev => prev.slice(0, -1));
-    };
-
-    const redoLastUndo = () => {
-        if (redoStack.length === 0) return;
-
-        const last = redoStack[redoStack.length - 1];
-        setRedoStack(prev => prev.slice(0, -1));
-        setUndoStack(prev => [...prev, cartItems]);
-        setCartItems(last);
-
-        setActionHistory(prev => prev.slice(0, -1));
-    };
-
-    const updateQuantity = (id: number, change: number) => {
+    const updateQuantity = async (id: number, change: number) => {
         const item = cartItems.find(i => i.id === id);
         if (!item) return;
-        pushToUndoStack(); // <-- this was missing
 
-        const newQty = Math.max(1, parseInt(item.quantity) + change).toString();
-
-        setActionHistory(prev => [
-            ...prev,
-            {
-                type: change > 0 ? "add" : "remove",
-                user: item.added_by || "מישהו",
-                itemName: item.name,
-                timestamp: Date.now()
-            }
-        ]);
-
-        setCartItems(prev =>
-            prev.map(i =>
-                i.id === id ? { ...i, quantity: newQty } : i
-            )
-        );
+        try {
+            const newQty = Math.max(1, parseInt(item.quantity) + change);
+            console.log("WOWWOWOWOW")
+            await api.patch(`/cart/${id}`, { quantity: newQty });
+            const updated = cartItems.map(i => i.id === id ? { ...i, quantity: newQty.toString() } : i);
+            setCartItems(updated);
+            fetchHistory();
+        } catch (err) {
+            console.error("Failed to update quantity", err);
+        }
     };
 
-    const deleteItem = (id: number) => {
-        const item = cartItems.find(i => i.id === id);
-        if (!item) return;
-        pushToUndoStack(); // <-- this was also missing
-
-        setActionHistory(prev => [
-            ...prev,
-            {
-                type: "delete",
-                user: item.added_by || "מישהו",
-                itemName: item.name,
-                timestamp: Date.now()
-            }
-        ]);
-
-        setCartItems(prev => prev.filter(i => i.id !== id));
+    const deleteItem = async (id: number) => {
+        try {
+            await api.delete(`/cart/${id}`);
+            const updated = cartItems.filter(i => i.id !== id);
+            setCartItems(updated);
+            fetchHistory();
+        } catch (err) {
+            console.error("Failed to delete item", err);
+        }
     };
     return (
         <View className="flex-1 relative bg-white">
@@ -143,17 +145,17 @@ export default function CartScreen() {
             </TouchableOpacity>
 
             {showHistory && (
-                <View className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mx-5 mb-4">
-                    {actionHistory.length === 0 ? (
-                        <Text className="text-right text-sm text-gray-500">אין שינויים</Text>
-                    ) : (
-                        actionHistory.map((action, index) => (
-                            <Text key={index} className="text-right text-sm text-gray-700 mb-1">
-                                {action.user} {action.type === "add" ? "הוסיף" : action.type === "remove" ? "הסיר" : "מחק"} את {action.itemName}
-                            </Text>
-                        ))
-                    )}
-                </View>
+                actionHistory.length === 0 ? (
+                    <Text className="text-right text-sm text-gray-500">אין שינויים</Text>
+                ) : (
+                    actionHistory.map((action, index) => (
+                        <Text key={index} className="text-right text-sm text-gray-700 mb-1 mr-2">
+                            {action.username || "מישהו"} {action.action === "add" ? "הוסיף" :
+                                action.action === "delete" ? "מחק" :
+                                    action.action === "update" ? "עדכן" : action.action} את {action.name} ({action.quantity}) בתאריך {dayjs(action.timestamp).format("DD/MM/YYYY HH:mm")}
+                        </Text>
+                    ))
+                )
             )}
             <View className="flex-row justify-end space-x-4 rtl:space-x-reverse px-5 mb-4">
 

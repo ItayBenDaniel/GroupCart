@@ -14,7 +14,7 @@ class CartItemCreate(CartBase):
 
 class CartItemUpdate(BaseModel):
     quantity: Optional[int] = None
-    purchased: Optional[bool] = None
+    # purchased: Optional[bool] = None
 
 
 class CartItem(CartBase):

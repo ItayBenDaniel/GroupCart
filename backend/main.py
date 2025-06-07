@@ -8,6 +8,7 @@ from backend.routers import (
     purchase,
     family,
     store_product,
+    cart_change,
 )
 from fastapi.staticfiles import StaticFiles
 import os
@@ -29,6 +30,7 @@ app.include_router(purchase.router)
 app.include_router(family.router)
 app.include_router(store.router)
 app.include_router(store_product.router)
+app.include_router(cart_change.router)
 
 
 @app.get("/")
