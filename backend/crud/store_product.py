@@ -26,7 +26,7 @@ def get_num_of_store_products(count: int, db: Session):
     )
     return (
         db.query(StoreProduct)
-        .filter(StoreProduct.item_code.in_(subquery))
+        .filter(StoreProduct.item_code.in_(sa.select(subquery)))
         .filter(StoreProduct.has_image == True)
         .order_by(sa.func.random())
         .limit(count)

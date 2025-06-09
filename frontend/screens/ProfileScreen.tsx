@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -48,7 +48,7 @@ export default function ProfileScreen() {
                 </Text>
             </TouchableOpacity>
             {showPurchases && (
-                <View className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mb-4">
+                <ScrollView className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mb-4">
                     {purchases.length === 0 ? (
                         <Text className="text-right text-sm text-gray-500">אין רכישות קודמות</Text>
                     ) : (
@@ -68,7 +68,7 @@ export default function ProfileScreen() {
                             </View>
                         ))
                     )}
-                </View>
+                </ScrollView>
             )}
 
             <TouchableOpacity

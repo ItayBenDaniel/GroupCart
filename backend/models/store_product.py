@@ -9,6 +9,7 @@ class StoreProduct(Base):
     store_id = Column(Integer, ForeignKey("stores.id"))
     item_code = Column(String, index=True)
     name = Column(String)
+    category = Column(String, default="אחר")
     manufacturer_name = Column(String, default="")
     manufacturer_country = Column(String, default="")
     item_description = Column(String, default="")
