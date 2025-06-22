@@ -10,6 +10,7 @@ export type StoreProduct = {
     item_code: string;
     original_price?: number;
     unit_of_measure: string;
+    category: string;
 };
 
 export default function useHomeScreenData() {
@@ -30,9 +31,10 @@ export default function useHomeScreenData() {
                 if (isMounted) console.error("Failed to fetch user", err);
             });
 
-        const productsPromise = api.get("/store_products/random/10")
+        const productsPromise = api.get("/store_products/random/100")
             .then((res) => {
                 if (isMounted) setRandomProducts(res.data);
+                console.log(randomProducts)
             })
             .catch((err) => {
                 if (isMounted) console.error("Failed to fetch products", err);

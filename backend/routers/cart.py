@@ -190,13 +190,9 @@ def update_cart_item(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
-    print("HERE!")
     user = db.query(User).filter(User.id == user_id).first()
-    print(f"ID :{id} - user ID {user_id} - family ID {user.family_id}")
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    print(f"ID :{id} - user ID {user_id} - family ID {user.family_id}")
-
     item = (
         db.query(CartDB)
         .filter(CartDB.store_product_id == id, CartDB.family_id == user.family_id)
@@ -204,12 +200,10 @@ def update_cart_item(
     )
     if not item:
         raise HTTPException(status_code=404, detail="Cart item not found")
-    print(f"ITEM {item}")
     old_quantity = item.quantity
     item.quantity = item_update.quantity
     if not item.quantity:
         raise HTTPException(status_code=400, detail="No quantity added")
-    print("HERE!2")
     db.commit()
     db.refresh(item)
     user = db.query(User).filter(User.id == user_id).first()
@@ -231,7 +225,6 @@ def update_cart_item(
         )
     )
     db.commit()
-    print("HERE!3")
     return item
 
 

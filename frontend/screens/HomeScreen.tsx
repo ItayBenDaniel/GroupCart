@@ -16,6 +16,7 @@ export default function HomeScreen() {
     const { username, randomProducts, loading } = useHomeScreenData();
     const [selectedProduct, setSelectedProduct] = useState<StoreProduct | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
     useEffect(() => {
         NavigationBar.setPositionAsync("absolute");
@@ -23,7 +24,7 @@ export default function HomeScreen() {
 
         checkTokenExpired();
     }, []);
-
+    //console.log("PRODCUTYS + CAT ", randomProducts)
     const handleProductPress = (product: StoreProduct) => {
         setSelectedProduct(product);
         setModalVisible(true);
@@ -45,9 +46,13 @@ export default function HomeScreen() {
         <View className="flex-1 relative bg-white">
             <HeaderBar name={username} />
             {/* <PromoCard title="10% הנחה על כל הקטגוריה!" image={require("../assets/images/react-logo.png")} /> */}
-            <CategoriesBar />
+            <CategoriesBar onCategorySelect={setCategoryFilter} />
             <FlatList
-                data={randomProducts}
+                data={
+                    categoryFilter
+                        ? randomProducts.filter((p) => p.category === categoryFilter)
+                        : randomProducts
+                }
                 keyExtractor={(_, index) => index.toString()}
                 numColumns={2}
                 contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 16 }}

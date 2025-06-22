@@ -14,12 +14,12 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-MAX_PRODUCTS = 20
+MAX_PRODUCTS = 100
 
 
 def main():
     db: Session = SessionLocal()
-
+    print("HERE wow wow")
     # 🔎 Subquery to find item_codes that appear under multiple chains
     subq = (
         db.query(StoreProduct.item_code)
@@ -35,6 +35,7 @@ def main():
         db.query(StoreProduct)
         .filter(StoreProduct.item_code.in_(subq))
         .filter(StoreProduct.has_image == False)
+        .filter(StoreProduct.category != "אחר")
         .order_by(func.random())
         .limit(MAX_PRODUCTS)
         .all()
@@ -54,3 +55,7 @@ def main():
     print(f"Successfully downloaded {success} out of {len(products)} images")
     db.commit()
     db.close()
+
+
+if __name__ == "__main__":
+    main()
