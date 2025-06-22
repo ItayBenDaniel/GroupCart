@@ -2,13 +2,14 @@ import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Image, Alert
 import useCartData from "../hooks/useCartData";
 import BottomNav from "../components/BottomNav";
 import BuyButton from "../components/buttons/BuyButton"
-import axios from "axios";
-import api from "../lib/axios";
 import { useState } from "react";
 import { CartItem } from "../hooks/useCartData";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect } from "react";
+import { useRouter } from "expo-router";
 import dayjs from "dayjs";
+import axios from "axios";
+import api from "../lib/axios";
 
 export default function CartScreen() {
     type ActionHistoryItem = {
@@ -22,7 +23,7 @@ export default function CartScreen() {
     const [editingItemId, setEditingItemId] = useState<number | null>(null);
     const [showHistory, setShowHistory] = useState(false);
     const [actionHistory, setActionHistory] = useState<ActionHistoryItem[]>([]);
-
+    const router = useRouter();
     const fetchHistory = async () => {
         try {
             console.log("HERE!123")
@@ -67,6 +68,7 @@ export default function CartScreen() {
 
             Alert.alert("הקנייה התבצעה בהצלחה🎉");
             setCartItems([]);
+            router.push("/recommendations")
         } catch (err) {
             console.error("Failed to add to cart:", err);
             Alert.alert("שגיאה", "לא ניתן להוסיף את המוצר לסל");
@@ -145,6 +147,15 @@ export default function CartScreen() {
 
             <Text className=" text-right text-3xl font-bold mr-5 mt-10 mb-10">עגלת קניות</Text>
 
+            <View className="items-end mb-4 px-5">
+                <TouchableOpacity
+                    onPress={() => router.push("/recommendations")}
+                    className="bg-orange-100 border border-orange-300 flex-row-reverse items-center px-4 py-3 rounded-2xl"
+                >
+                    <Text className="text-orange-800 font-semibold text-base ml-2">מוצרים מומלצים</Text>
+                    <Ionicons name="sparkles-outline" size={20} color="#F17547" />
+                </TouchableOpacity>
+            </View>
             <TouchableOpacity
                 onPress={() => setShowHistory(!showHistory)}
                 className="self-end mr-5 mb-3"
@@ -193,7 +204,7 @@ export default function CartScreen() {
                             <View className="flex-row items-center">
                                 <Image
                                     source={{
-                                        uri: `http://192.168.68.52:8002/static/icons/${item.item_code}.png`,
+                                        uri: `http://10.100.102.23:8002/static/icons/${item.item_code}.png`,
                                     }}
                                     className="w-16 h-16 ml-4"
                                     resizeMode="contain"

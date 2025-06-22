@@ -78,7 +78,7 @@ export default function ProductDetails({
                         <Text className="font-interSemi text-xs text-center">{store.name}</Text>
                         <Text className="text-black font-interBold mt-1 text-sm">₪ {store.price}</Text>
                         <Image
-                            source={{ uri: `http://192.168.68.52:8002/static/icons/${store.image}.png` }}
+                            source={{ uri: `http://10.100.102.23:8002/static/icons/${store.image}.png` }}
                             className="w-20 h-20 object-contain mt-2"
                         />
                     </TouchableOpacity>

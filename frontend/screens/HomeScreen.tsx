@@ -54,7 +54,7 @@ export default function HomeScreen() {
                 columnWrapperStyle={{ justifyContent: "space-between" }}
                 renderItem={({ item }) => (
                     <ProductCard
-                        image={{ uri: `http://192.168.68.52:8002/static/icons/${item.item_code}.png` }}
+                        image={{ uri: `http://10.100.102.23:8002/static/icons/${item.item_code}.png` }}
                         name={item.name}
                         quantity={item.quantity}
                         unit_of_measure={item.unit_of_measure}

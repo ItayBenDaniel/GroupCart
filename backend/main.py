@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from backend.database import Base, engine
 from backend.routers import (
     products,
+    recommendations,
     store,
     users,
     cart,
@@ -31,6 +32,7 @@ app.include_router(family.router)
 app.include_router(store.router)
 app.include_router(store_product.router)
 app.include_router(cart_change.router)
+app.include_router(recommendations.router)
 
 
 @app.get("/")

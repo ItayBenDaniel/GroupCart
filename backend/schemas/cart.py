@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, List
 from backend.schemas.store_product import StoreProduct
 
 
@@ -26,3 +26,12 @@ class CartItem(CartBase):
 
 class CartProduct(StoreProduct):
     quantity: int
+
+
+class BulkCartItem(BaseModel):
+    store_product_id: int
+    quantity: int
+
+
+class BulkCartRequest(BaseModel):
+    items: List[BulkCartItem]

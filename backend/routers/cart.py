@@ -6,7 +6,13 @@ from backend.models.cart import CartDB
 from backend.models.store_product import StoreProduct
 from backend.models.users import User
 from backend.schemas.cart_change import CartChangeOut
-from backend.schemas.cart import CartItemCreate, CartItemUpdate, CartItem
+from backend.schemas.cart import (
+    CartItemCreate,
+    CartItemUpdate,
+    CartItem,
+    BulkCartItem,
+    BulkCartRequest,
+)
 from backend.core.utils import get_current_user
 from typing import List
 from backend.models.cart_change import CartChange
@@ -284,3 +290,82 @@ def mark_item_as_purchased(
     item.purchased = True
     db.commit()
     return {"detail": "Marked as purchased"}
+
+
+@router.post("/bulk", response_model=List[CartItem])
+def bulk_add_to_cart(
+    payload: BulkCartRequest,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user.family_id:
+        raise HTTPException(status_code=400, detail="User must belong to a family")
+
+    added_items = []
+
+    for item in payload.items:
+        if item.quantity <= 0:
+            continue
+
+        product = (
+            db.query(StoreProduct)
+            .filter(StoreProduct.id == item.store_product_id)
+            .first()
+        )
+        if not product:
+            continue
+
+        existing = (
+            db.query(CartDB)
+            .filter_by(
+                user_id=user_id,
+                store_product_id=item.store_product_id,
+                is_deleted=False,
+            )
+            .first()
+        )
+
+        if existing:
+            existing.quantity += item.quantity
+            db.add(
+                CartChange(
+                    family_id=user.family_id,
+                    username=user.username,
+                    action="update",
+                    name=product.name,
+                    store_product_id=item.store_product_id,
+                    quantity=existing.quantity,
+                    previous_quantity=existing.quantity - item.quantity,
+                    timestamp=datetime.utcnow(),
+                    undone=0,
+                )
+            )
+            added_items.append(existing)
+        else:
+            new_item = CartDB(
+                user_id=user_id,
+                family_id=user.family_id,
+                store_product_id=item.store_product_id,
+                quantity=item.quantity,
+                purchased=False,
+            )
+            db.add(new_item)
+            db.flush()
+            db.add(
+                CartChange(
+                    family_id=user.family_id,
+                    username=user.username,
+                    action="add",
+                    name=product.name,
+                    store_product_id=item.store_product_id,
+                    quantity=item.quantity,
+                    previous_quantity=None,
+                    timestamp=datetime.utcnow(),
+                    undone=0,
+                )
+            )
+            added_items.append(new_item)
+
+    db.commit()
+    return added_items
