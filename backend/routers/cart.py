@@ -17,6 +17,8 @@ from backend.core.utils import get_current_user
 from typing import List
 from backend.models.cart_change import CartChange
 from datetime import datetime
+from backend.models.store import Store
+from haversine import haversine, Unit
 
 router = APIRouter(prefix="/cart", tags=["cart"])
 
@@ -362,3 +364,84 @@ def bulk_add_to_cart(
 
     db.commit()
     return added_items
+
+
+@router.get("/prices/compare")
+def compare_cart_prices(
+    lat: float,
+    lon: float,
+    radius_km: float,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user),
+):
+    # Get user's family and cart items
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or not user.family_id:
+        return {"error": "User must belong to a family"}
+
+    cart_items = (
+        db.query(CartDB)
+        .filter(
+            CartDB.family_id == user.family_id,
+            CartDB.is_deleted == False,
+            CartDB.purchased == False,
+        )
+        .all()
+    )
+
+    if not cart_items:
+        return {"error": "No active cart items found"}
+
+    # Get nearby stores
+    all_stores = (
+        db.query(Store)
+        .filter(Store.latitude.isnot(None), Store.longitude.isnot(None))
+        .all()
+    )
+
+    results = []
+
+    for store in all_stores:
+        try:
+            dist = haversine(
+                (lat, lon),
+                (float(store.latitude), float(store.longitude)),
+                unit=Unit.KILOMETERS,
+            )
+            if dist > radius_km:
+                continue
+
+            # Try to price the cart in this store
+            total = 0
+            found_all = True
+
+            for item in cart_items:
+                store_product = (
+                    db.query(StoreProduct)
+                    .filter(
+                        StoreProduct.item_code == item.store_product.item_code,
+                        StoreProduct.store_id == store.id,
+                    )
+                    .first()
+                )
+                if not store_product:
+                    found_all = False
+                    break
+                total += float(store_product.price) * item.quantity
+
+            if found_all:
+                results.append(
+                    {
+                        "store_id": store.id,
+                        "store_name": store.name,
+                        "address": store.address,
+                        "distance_km": round(dist, 2),
+                        "total_price": round(total, 2),
+                    }
+                )
+
+        except Exception as e:
+            continue
+
+    results.sort(key=lambda x: x["total_price"])
+    return results

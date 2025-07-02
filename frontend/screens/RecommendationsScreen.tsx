@@ -8,6 +8,9 @@ import { Alert } from "react-native";
 export default function RecommendationsScreen() {
     const [recommendations, setRecommendations] = useState<any[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
+    const [selectedTab, setSelectedTab] = useState<string>("מומלצים");
+    const tabs = ["קניתי בעבר", "הנחות", "מומלצים"];
+
     const router = useRouter();
 
     useEffect(() => {
@@ -51,16 +54,18 @@ export default function RecommendationsScreen() {
                 </View>
                 {/* Tabs */}
                 <View className="flex-row justify-end mt-4 mb-4 space-x-2 space-x-reverse">
-
-                    <TouchableOpacity className="bg-gray-100 mx-1 px-4 py-2 rounded-full">
-                        <Text className="text-gray-700">הנחות</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="bg-gray-100 mx-1 px-4 py-2 rounded-full">
-                        <Text className="text-gray-700">קניתי בעבר</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="bg-orange-500 mx-1 mr-0 px-4 py-2 rounded-full">
-                        <Text className="text-white font-bold">מומלצים</Text>
-                    </TouchableOpacity>
+                    {tabs.map((tab) => (
+                        <TouchableOpacity
+                            key={tab}
+                            onPress={() => setSelectedTab(tab)}
+                            className={`mx-1 px-4 py-2 rounded-full ${selectedTab === tab ? "bg-orange-500" : "bg-gray-100"
+                                }`}
+                        >
+                            <Text className={`font-bold ${selectedTab === tab ? "text-white" : "text-gray-700"}`}>
+                                {tab}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
             </View>
 

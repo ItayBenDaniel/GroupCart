@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.schemas.store import Store as StoreSchema
+from backend.schemas.store import StoreNearby
 from backend.schemas.store_product import StoreProduct
 from backend.models.store import Store
 from backend.models.store_product import StoreProduct as StoreProductDB
 from backend import database
+from haversine import haversine, Unit
+
+from typing import List
 
 router = APIRouter(prefix="/stores", tags=["stores"])
 
@@ -30,3 +34,36 @@ def get_store_products(store_id: int, db: Session = Depends(get_db)):
     if not products:
         raise HTTPException(status_code=404, detail="No products found for this store.")
     return products
+
+
+@router.get("/nearby", response_model=List[StoreNearby])
+def get_nearby_stores(lat: float, lon: float, db: Session = Depends(get_db)):
+    stores = (
+        db.query(Store)
+        .filter(Store.latitude.isnot(None), Store.longitude.isnot(None))
+        .all()
+    )
+    nearby = []
+
+    for store in stores:
+        try:
+            distance = haversine(
+                (lat, lon),
+                (float(store.latitude), float(store.longitude)),
+                unit=Unit.KILOMETERS,
+            )
+            nearby.append(
+                {
+                    "id": store.id,
+                    "name": store.name,
+                    "address": store.address,
+                    "latitude": store.latitude,
+                    "longitude": store.longitude,
+                    "distance_km": round(distance, 2),
+                }
+            )
+        except (ValueError, TypeError):
+            continue
+
+    nearby.sort(key=lambda x: x["distance_km"])
+    return nearby[:5]

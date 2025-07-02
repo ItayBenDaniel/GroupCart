@@ -23,9 +23,8 @@ export default function CategoriesBar({ onCategorySelect }: Props) {
 
     return (
         <View className="mt-6">
-            <View className="flex-row justify-between items-center px-4 mb-2">
-                <Text className="text-orange-500 text-sm font-interSemi">ראה הכל</Text>
-                <Text className="text-xl font-interBold">קטגוריות ראשיות</Text>
+            <View className="px-4 mb-2 items-end">
+                <Text className="text-xl font-interBold text-right">קטגוריות ראשיות</Text>
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="px-3 mt-3">

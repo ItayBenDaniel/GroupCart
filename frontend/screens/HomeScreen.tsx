@@ -1,13 +1,11 @@
 // screens/HomeScreen.tsx
 import React, { useEffect, useState } from "react";
-import { FlatList, View, ActivityIndicator } from "react-native";
+import { View, ScrollView } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
 
 import HeaderBar from "../components/HeaderBar";
-import PromoCard from "../components/PromoCard";
 import CategoriesBar from "../components/CategoryBar";
 import ProductCard from "../components/ProductCard";
-import BottomNav from "../components/BottomNav";
 import ProductModal from "../components/ProductModal";
 import useHomeScreenData, { StoreProduct } from "../hooks/useHomeScreenData";
 import LottieView from "lottie-react-native";
@@ -24,7 +22,6 @@ export default function HomeScreen() {
 
         checkTokenExpired();
     }, []);
-    //console.log("PRODCUTYS + CAT ", randomProducts)
     const handleProductPress = (product: StoreProduct) => {
         setSelectedProduct(product);
         setModalVisible(true);
@@ -43,32 +40,31 @@ export default function HomeScreen() {
         );
     }
     return (
-        <View className="flex-1 relative bg-white">
-            <HeaderBar name={username} />
-            {/* <PromoCard title="10% הנחה על כל הקטגוריה!" image={require("../assets/images/react-logo.png")} /> */}
-            <CategoriesBar onCategorySelect={setCategoryFilter} />
-            <FlatList
-                data={
-                    categoryFilter
-                        ? randomProducts.filter((p) => p.category === categoryFilter)
-                        : randomProducts
-                }
-                keyExtractor={(_, index) => index.toString()}
-                numColumns={2}
+        <View className="flex-1 relative bg-white mt-5">
+
+            <ScrollView
                 contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 16 }}
-                columnWrapperStyle={{ justifyContent: "space-between" }}
-                renderItem={({ item }) => (
-                    <ProductCard
-                        image={{ uri: `http://10.100.102.23:8002/static/icons/${item.item_code}.png` }}
-                        name={item.name}
-                        quantity={item.quantity}
-                        unit_of_measure={item.unit_of_measure}
-                        price={item.price.toString()}
-                        oldPrice={(item.price + 5).toString()}
-                        onPress={() => handleProductPress(item)}
-                    />
-                )}
-            />
+                showsVerticalScrollIndicator={false}
+            >
+                <HeaderBar name={username} />
+                <CategoriesBar onCategorySelect={setCategoryFilter} />
+
+                <View className="flex-row flex-wrap justify-between">
+                    {(categoryFilter ? randomProducts.filter((p) => p.category === categoryFilter) : randomProducts)
+                        .map((item, index) => (
+                            <ProductCard
+                                key={index}
+                                image={{ uri: `http://10.100.102.23:8002/static/icons/${item.item_code}.png` }}
+                                name={item.name}
+                                quantity={item.quantity}
+                                unit_of_measure={item.unit_of_measure}
+                                price={item.price.toString()}
+                                oldPrice={(item.price + 5).toString()}
+                                onPress={() => handleProductPress(item)}
+                            />
+                        ))}
+                </View>
+            </ScrollView>
             <ProductModal
                 visible={modalVisible}
                 product={selectedProduct}

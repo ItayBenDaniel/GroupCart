@@ -15,5 +15,5 @@ class Store(Base):
     city = Column(String, default="")
     latitude = Column(String, default="", nullable=True)
     longitude = Column(String, default="", nullable=True)
-
+    zip_code = Column(String, default="", nullable=True)
     __table_args__ = (UniqueConstraint("chain_id", "subchain_id", "store_id"),)

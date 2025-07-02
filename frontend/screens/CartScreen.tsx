@@ -26,9 +26,7 @@ export default function CartScreen() {
     const router = useRouter();
     const fetchHistory = async () => {
         try {
-            console.log("HERE!123")
             const res = await api.get("/history/");
-            console.log("HERE!1234 ")
             setActionHistory(res.data);
         } catch (err) {
             console.error("Failed to fetch history:", err);
@@ -61,14 +59,11 @@ export default function CartScreen() {
                 quantity: item.quantity,
             }))
         };
-        console.log("CART IS ", cartPayload)
-
         try {
-            const res = await api.post("/purchases/", cartPayload,);
-
+            await api.post("/purchases/", cartPayload,);
             Alert.alert("הקנייה התבצעה בהצלחה🎉");
             setCartItems([]);
-            router.push("/recommendations")
+            router.push("/")
         } catch (err) {
             console.error("Failed to add to cart:", err);
             Alert.alert("שגיאה", "לא ניתן להוסיף את המוצר לסל");

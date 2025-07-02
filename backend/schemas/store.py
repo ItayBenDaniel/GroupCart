@@ -12,6 +12,7 @@ class StoreBase(BaseModel):
     city: Optional[str] = ""
     latitude: Optional[str] = ""
     longitude: Optional[str] = ""
+    zip_code: Optional[str] = ""
 
 
 class StoreCreate(StoreBase):
@@ -21,3 +22,12 @@ class StoreCreate(StoreBase):
 class Store(StoreBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+
+class StoreNearby(BaseModel):
+    id: int
+    name: str
+    address: str
+    latitude: str
+    longitude: str
+    distance_km: float
