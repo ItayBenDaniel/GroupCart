@@ -263,6 +263,9 @@ export default function CartScreen() {
                         <Text className="text-right text-lg font-bold mb-3 mr-5">
                             סך הכול: ₪{totalPrice.toFixed(2)}
                         </Text>
+                        <TouchableOpacity onPress={() => router.push("/compare")}>
+                            <Text className="text-orange-700 font-bold text-right">השווה מחירים</Text>
+                        </TouchableOpacity>
                         <BuyButton button_text="קנה עכשיו" handleAddToCart={handleBuyCart} />
                     </View>
                 }

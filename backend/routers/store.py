@@ -56,6 +56,7 @@ def get_nearby_stores(lat: float, lon: float, db: Session = Depends(get_db)):
                 {
                     "id": store.id,
                     "name": store.name,
+                    "chain_id": store.chain_id,
                     "address": store.address,
                     "latitude": store.latitude,
                     "longitude": store.longitude,

@@ -27,6 +27,7 @@ class Store(StoreBase):
 class StoreNearby(BaseModel):
     id: int
     name: str
+    chain_id: str
     address: str
     latitude: str
     longitude: str

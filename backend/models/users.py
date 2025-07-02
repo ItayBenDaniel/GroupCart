@@ -14,3 +14,4 @@ class User(Base):
     family_id = Column(Integer, ForeignKey("families.id"), nullable=True)
     family = relationship("Family", back_populates="members", foreign_keys=[family_id])
     cart_items = relationship("CartDB", back_populates="user")
+    radius_km = Column(Integer, default=10)

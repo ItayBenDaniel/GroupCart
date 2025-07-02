@@ -75,3 +75,16 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     if not user:
         return {"error": "User not found"}
     return user
+
+
+@router.post("/radius")
+def update_prefered_radius(
+    radius, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return {"error": "User not found"}
+    user.radius_km = radius
+    db.commit()
+    db.refresh(user)
+    return "User radius updated successfully"

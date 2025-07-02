@@ -1,11 +1,10 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import api from "../lib/axios";
 import useUserData from "../hooks/useUserData";
 import dayjs from 'dayjs';
-import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 
 export default function ProfileScreen() {
@@ -16,8 +15,7 @@ export default function ProfileScreen() {
     const [purchases, setPurchases] = useState<any[]>([]);
     const [familyMembers, setFamilyMembers] = useState<any[]>([]);
     const [radius, setRadius] = useState(5);
-    const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
-    const [nearbyStores, setNearbyStores] = useState<any[]>([]);
+
 
     const togglePurchases = async () => {
         if (!showPurchases) {
@@ -42,33 +40,14 @@ export default function ProfileScreen() {
         setShowFamily(!showFamily);
     };
 
-    const fetchNearbyStores = async () => {
+    const updateRadius = async () => {
         try {
-            console.log("trying")
-            const { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== "granted") {
-                alert("יש לאשר גישה למיקום");
-                return;
-            }
 
-            console.log("Getting location...");
-            const t0 = Date.now();
-            let loc = await Location.getLastKnownPositionAsync();
-            if (!loc) {
-                loc = await Location.getCurrentPositionAsync({});
-            }
-            const t1 = Date.now();
-            console.log("Location acquired in", (t1 - t0) / 1000, "seconds");
-            const lat = loc.coords.latitude;
-            const lon = loc.coords.longitude;
-            setLocation({ lat, lon });
-
-            const res = await api.get(`/stores/nearby?lat=${lat}&lon=${lon}&radius=${radius}`);
+            const res = await api.post(`/users/radius?radius=${radius}`);
             console.log("res is :", res.data)
-            setNearbyStores(res.data);
         } catch (err) {
-            console.error("Location or store fetch failed:", err);
-            alert("שגיאה באחזור מיקום או חנויות.");
+            console.error("Updating user radius failed:", err);
+            alert("שגיאה בעדכון נתונים.");
         }
     };
     return (
@@ -137,16 +116,16 @@ export default function ProfileScreen() {
                     mode="dropdown"
                     style={{ height: 50 }}
                 >
-                    {[1, 2, 5, 10, 15, 20].map((km) => (
+                    {[1, 2, 5, 10, 15, 20, 50, 100].map((km) => (
                         <Picker.Item key={km} label={`${km} ק"מ`} value={km} />
                     ))}
                 </Picker>
 
                 <TouchableOpacity
-                    onPress={fetchNearbyStores}
+                    onPress={updateRadius}
                     className="bg-blue-500 rounded-full py-3 mt-4"
                 >
-                    <Text className="text-white font-bold text-center text-lg">מצא חנויות קרובות</Text>
+                    <Text className="text-white font-bold text-center text-lg">עדכן רדיוס חיפוש</Text>
                 </TouchableOpacity>
             </View>
             <TouchableOpacity

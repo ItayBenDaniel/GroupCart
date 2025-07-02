@@ -370,7 +370,6 @@ def bulk_add_to_cart(
 def compare_cart_prices(
     lat: float,
     lon: float,
-    radius_km: float,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
@@ -378,7 +377,7 @@ def compare_cart_prices(
     user = db.query(User).filter(User.id == user_id).first()
     if not user or not user.family_id:
         return {"error": "User must belong to a family"}
-
+    radius_km = user.radius_km
     cart_items = (
         db.query(CartDB)
         .filter(
@@ -434,6 +433,7 @@ def compare_cart_prices(
                     {
                         "store_id": store.id,
                         "store_name": store.name,
+                        "chain_id": store.chain_id,
                         "address": store.address,
                         "distance_km": round(dist, 2),
                         "total_price": round(total, 2),
