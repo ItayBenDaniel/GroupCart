@@ -236,14 +236,17 @@ def delete_cart_item(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     item = (
         db.query(CartDB)
-        .filter(CartDB.store_product_id == id, CartDB.user_id == user_id)
+        .filter(CartDB.store_product_id == id, CartDB.family_id == user.family_id)
         .first()
     )
     if not item:
         raise HTTPException(status_code=404, detail="Cart item not found")
-    user = db.query(User).filter(User.id == user_id).first()
+
     product = db.query(StoreProduct).filter(StoreProduct.id == id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -274,9 +277,12 @@ def mark_item_as_purchased(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     item = (
         db.query(CartDB)
-        .filter(CartDB.store_product_id == id, CartDB.user_id == user_id)
+        .filter(CartDB.store_product_id == id, CartDB.family_id == user.family_id)
         .first()
     )
     if not item:

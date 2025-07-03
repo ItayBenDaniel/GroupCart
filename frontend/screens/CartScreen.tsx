@@ -166,9 +166,9 @@ export default function CartScreen() {
                 ) : (
                     actionHistory.map((action, index) => (
                         <Text key={index} className="text-right text-sm text-gray-700 mb-1 mr-2">
-                            {action.username || "מישהו"} {action.action === "add" ? "הוסיף" :
-                                action.action === "delete" ? "מחק" :
-                                    action.action === "update" ? "עדכן" : action.action} את {action.name} ({action.quantity}) בתאריך {dayjs(action.timestamp).format("DD/MM/YYYY HH:mm")}
+                            {action.username || "מישהו"} {action.action === "add" ? "הוסיפ/ה" :
+                                action.action === "delete" ? "מחק/ה" :
+                                    action.action === "update" ? "עדכנ/ה" : action.action} את {action.name} ({action.quantity}) בתאריך {dayjs(action.timestamp).format("DD/MM/YYYY HH:mm")}
                         </Text>
                     ))
                 )

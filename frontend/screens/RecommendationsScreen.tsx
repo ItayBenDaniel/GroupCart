@@ -10,7 +10,7 @@ export default function RecommendationsScreen() {
     const [liked, setLiked] = useState<any[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedTab, setSelectedTab] = useState<string>("מומלצים");
-    const tabs = ["קניתי בעבר", "הנחות", "מומלצים", "מועדפים"];
+    const tabs = ["קניתי בעבר", "הנחות", "מועדפים", "מומלצים"];
 
     const router = useRouter();
 

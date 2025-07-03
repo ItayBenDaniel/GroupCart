@@ -72,7 +72,7 @@ export default function ProfileScreen() {
                         purchases.map((purchase, index) => (
                             <View key={index} className="mb-3">
                                 <Text className="text-right text-m font-bold text-orange-600 mb-1">
-                                    רכישה #{purchase.id}
+                                    רכישה #{index + 1}
                                 </Text>
                                 <Text className="text-right text-m font-bold text-orange-600 mb-1">
                                     הרכישה התבצעה ב #{dayjs(purchase.purchased_at).format("DD/MM/YYYY HH:mm")}
