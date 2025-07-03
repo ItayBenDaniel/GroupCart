@@ -10,7 +10,9 @@ type Props = {
     price: string;
     unit_of_measure: string;
     oldPrice?: string;
-    isFavorite?: boolean;
+    liked?: boolean;
+    sale: string
+    onToggleLike?: () => void;
     onPress?: () => void;
 };
 
@@ -21,24 +23,33 @@ export default function ProductCard({
     price,
     unit_of_measure,
     oldPrice,
-    isFavorite = false,
+    liked = false,
+    sale,
+    onToggleLike,
     onPress,
 }: Props) {
-    const [favorite, setFavorite] = useState(isFavorite);
+
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.9} className="w-[48%] bg-white rounded-xl p-3 mb-4 mt-3 shadow-sm border border-gray-100">
             {/* Top row: discount + favorite */}
-            <View className="flex-row justify-between items-center mb-" >
-                <View className="bg-orange-100 px-2 py-1 rounded-md">
-                    <Text className="text-sm text-orange-600 font-interSemi">הנחה 50%</Text>
-                </View>
-                <TouchableOpacity onPress={() => setFavorite(!favorite)}>
-                    <Ionicons className=" rounded-md bg-orange flex-row"
-                        name={favorite ? "heart" : "heart-outline"}
+            <View className="flex-row-reverse justify-between items-center mb-2">
+                {/* Heart icon always on right */}
+                <TouchableOpacity onPress={onToggleLike}>
+                    <Ionicons
+                        name={liked ? "heart" : "heart-outline"}
                         size={20}
-                        color={favorite ? "red" : "gray"}
+                        color={liked ? "red" : "gray"}
                     />
                 </TouchableOpacity>
+
+                {/* Sale badge or placeholder to preserve spacing */}
+                {sale !== "0" ? (
+                    <View className="bg-orange-100 px-2 py-1 rounded-md">
+                        <Text className="text-sm text-orange-600 font-interSemi">הנחה {sale}%</Text>
+                    </View>
+                ) : (
+                    <View className="w-16" /> // same width as badge to keep spacing
+                )}
             </View>
 
             {/* Image */}

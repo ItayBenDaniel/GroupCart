@@ -18,12 +18,14 @@ export default function ProductModal({ visible, product, onClose }: Props) {
         <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
             <ProductDetails
                 product_id={product.id}
+                item_code={product.item_code}
                 image={{ uri: `http://10.100.102.23:8002/static/icons/${product.item_code}.png` }}
                 name={product.name}
                 quantity={product.quantity}
                 unit_of_measure={product.unit_of_measure}
                 price={product.price.toString()}
-                oldPrice={(product.price + 5).toString()}
+                oldPrice={product.oldPrice ? product.oldPrice.toFixed(2) : undefined}
+                sale={product.sale}
                 onClose={onClose}
             />
         </Modal>

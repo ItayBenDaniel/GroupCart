@@ -20,7 +20,7 @@ export default function useUserData() {
                 const res = await api.get(`/users/users/${userId}`);
                 setUser(res.data);
             } catch (err) {
-                console.error("Failed to fetch user data:", err);
+                //console.error("Failed to fetch user data:", err);
                 setUser(null);
             }
         })();

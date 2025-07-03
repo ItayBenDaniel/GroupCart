@@ -1,5 +1,6 @@
 from sqlalchemy import ForeignKey, Column, Integer, String, Boolean, Float
 from backend.database import Base
+from sqlalchemy.orm import relationship
 
 
 class StoreProduct(Base):
@@ -19,3 +20,4 @@ class StoreProduct(Base):
     price = Column(Float, nullable=True)
     discounted = Column(Boolean, default=False)
     has_image = Column(Boolean, default=False, index=True)
+    store = relationship("Store")

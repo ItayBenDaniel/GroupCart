@@ -7,9 +7,10 @@ import { Alert } from "react-native";
 
 export default function RecommendationsScreen() {
     const [recommendations, setRecommendations] = useState<any[]>([]);
+    const [liked, setLiked] = useState<any[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedTab, setSelectedTab] = useState<string>("מומלצים");
-    const tabs = ["קניתי בעבר", "הנחות", "מומלצים"];
+    const tabs = ["קניתי בעבר", "הנחות", "מומלצים", "מועדפים"];
 
     const router = useRouter();
 
@@ -22,8 +23,16 @@ export default function RecommendationsScreen() {
                 console.error("Failed to load recommendations:", error);
             }
         };
-
+        const fetchLiked = async () => {
+            try {
+                const res = await api.get("/likes/");
+                setLiked(res.data);
+            } catch (error) {
+                console.error("Failed to load Likes:", error);
+            }
+        };
         fetchRecommendations();
+        fetchLiked();
     }, []);
 
     const toggleSelect = (id: number) => {
@@ -45,7 +54,7 @@ export default function RecommendationsScreen() {
     }
     return (
         <View className="flex-1 bg-white pt-16">
-            <View className="px-6 mb-4">
+            <View className="px-2 mb-4">
                 <View className="flex-row justify-between items-center mb-2">
                     <Text className="text-xl font-bold text-right flex-1">מוצרים מומלצים</Text>
                     <TouchableOpacity onPress={() => router.back()} className="border border-gray-400 p-2 rounded-xl bg-gray-50 ml-4">
@@ -53,7 +62,7 @@ export default function RecommendationsScreen() {
                     </TouchableOpacity>
                 </View>
                 {/* Tabs */}
-                <View className="flex-row justify-end mt-4 mb-4 space-x-2 space-x-reverse">
+                <View className="flex-row justify-end mt-4 mb-4  space-x-reverse ">
                     {tabs.map((tab) => (
                         <TouchableOpacity
                             key={tab}
@@ -61,7 +70,7 @@ export default function RecommendationsScreen() {
                             className={`mx-1 px-4 py-2 rounded-full ${selectedTab === tab ? "bg-orange-500" : "bg-gray-100"
                                 }`}
                         >
-                            <Text className={`font-bold ${selectedTab === tab ? "text-white" : "text-gray-700"}`}>
+                            <Text className={`font-bold ${selectedTab === tab ? "text-white" : "text-gray-700"} text-s`}>
                                 {tab}
                             </Text>
                         </TouchableOpacity>
@@ -70,7 +79,7 @@ export default function RecommendationsScreen() {
             </View>
 
             <ScrollView className="px-6 mb-20">
-                {recommendations.map((product, index) => (
+                {(selectedTab === "מועדפים" ? liked : recommendations).map((product, index) => (
                     <TouchableOpacity
                         key={index}
                         className={`flex-row justify-between items-center mb-4  rounded-2xl p-4 ${selected.includes(product.id)

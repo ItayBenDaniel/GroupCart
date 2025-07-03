@@ -29,7 +29,7 @@ export default function CartScreen() {
             const res = await api.get("/history/");
             setActionHistory(res.data);
         } catch (err) {
-            console.error("Failed to fetch history:", err);
+            //console.error("Failed to fetch history:", err);
         }
     };
     useEffect(() => {
@@ -90,7 +90,7 @@ export default function CartScreen() {
             const updatedCart = await api.get("/cart/full");
             setCartItems(updatedCart.data);
         } catch (err) {
-            console.error("Redo failed:", err);
+            //console.error("Redo failed:", err);
         }
     };
 

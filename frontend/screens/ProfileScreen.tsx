@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -15,7 +15,7 @@ export default function ProfileScreen() {
     const [purchases, setPurchases] = useState<any[]>([]);
     const [familyMembers, setFamilyMembers] = useState<any[]>([]);
     const [radius, setRadius] = useState(5);
-
+    const [familyName, setFamilyName] = useState<string | null>(null);
 
     const togglePurchases = async () => {
         if (!showPurchases) {
@@ -33,6 +33,7 @@ export default function ProfileScreen() {
             try {
                 const res = await api.get("/family/me");
                 setFamilyMembers(res.data.members);
+                setFamilyName(res.data.name || `משפחה #${res.data.id}`);
             } catch (err) {
                 console.error("Failed to fetch Family:", err);
             }
@@ -44,6 +45,7 @@ export default function ProfileScreen() {
         try {
 
             const res = await api.post(`/users/radius?radius=${radius}`);
+            Alert.alert("רדיוס החיפוש עודכן בהצלחה", "");
             console.log("res is :", res.data)
         } catch (err) {
             console.error("Updating user radius failed:", err);
@@ -94,8 +96,15 @@ export default function ProfileScreen() {
                     {showFamily ? "הסתר חברי משפחה" : "הצג חברי משפחה"}
                 </Text>
             </TouchableOpacity>
+
             {showFamily && (
+
                 <View className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mb-4">
+                    {familyName && (
+                        <Text className="text-right text-lg font-bold text-gray-800 mb-2">
+                            {`את/ה שייך/ת ל${familyName}`}
+                        </Text>
+                    )}
                     {familyMembers.length === 0 ? (
                         <Text className="text-right text-sm text-gray-500">אין חברים במשפחה</Text>
                     ) : (

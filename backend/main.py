@@ -10,6 +10,7 @@ from backend.routers import (
     family,
     store_product,
     cart_change,
+    liked_items,
 )
 from fastapi.staticfiles import StaticFiles
 import os
@@ -33,6 +34,7 @@ app.include_router(store.router)
 app.include_router(store_product.router)
 app.include_router(cart_change.router)
 app.include_router(recommendations.router)
+app.include_router(liked_items.router)
 
 
 @app.get("/")
