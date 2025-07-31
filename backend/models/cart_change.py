@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from backend.database import Base  # or wherever your Base is defined
+from backend.database import Base
 
 
 class CartChange(Base):
@@ -10,7 +10,7 @@ class CartChange(Base):
     id = Column(Integer, primary_key=True)
     family_id = Column(Integer, ForeignKey("families.id"))
     username = Column(String)
-    action = Column(String)  # "add", "update", "delete"
+    action = Column(String)
     store_product_id = Column(Integer)
     name = Column(String)
     quantity = Column(Integer)

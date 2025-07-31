@@ -4,5 +4,4 @@ export type StoreProduct = {
     quantity: string;
     unit_of_measure: string;
     price: number;
-    // add more fields if needed
 };

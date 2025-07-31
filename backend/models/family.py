@@ -12,10 +12,10 @@ class Family(Base):
     name = Column(String, unique=True, nullable=False)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    owner = relationship("User", foreign_keys=[owner_id])  # 👈 Already good
+    owner = relationship("User", foreign_keys=[owner_id])
     cart_items = relationship("CartDB", back_populates="family")
     members = relationship(
         "User",
         back_populates="family",
-        foreign_keys=[User.family_id],  # 👉 Explicit here
+        foreign_keys=[User.family_id],
     )

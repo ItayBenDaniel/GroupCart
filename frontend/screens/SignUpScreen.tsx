@@ -18,9 +18,8 @@ export default function SignUpScreen() {
             });
 
 
-            // TODO: Store token in secure storage (we’ll do this next)
             Alert.alert("נרשמת בהצלחה ✅");
-            router.push("/login"); // go to home
+            router.push("/login");
 
         } catch (err) {
             console.error(err);
@@ -30,8 +29,7 @@ export default function SignUpScreen() {
             try {
                 await api.post(`/family/${familyId}/join?email=${email}`, {});
             } catch (err) {
-                alert("Failed to join family. Please check the ID or try creating one.");
-                // Optional fallback: prompt user to create new family
+                alert("התחברות למשפחה נכשלה");
             }
         } else {
             await api.post("/family", { name: `${username}'s Family` });

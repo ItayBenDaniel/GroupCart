@@ -45,7 +45,7 @@ def get_current_user(token: str = Security(api_key_scheme)) -> int:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    actual_token = token[len("Bearer ") :]  # Strip 'Bearer ' prefix
+    actual_token = token[len("Bearer ") :]
     payload = decode_jwt_token(actual_token)
 
     if not payload or "sub" not in payload:

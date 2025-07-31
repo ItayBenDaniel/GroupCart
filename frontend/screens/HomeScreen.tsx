@@ -64,7 +64,7 @@ export default function HomeScreen() {
 
                 <CategoriesBar onCategorySelect={(category) => {
                     setCategoryFilter(category);
-                    setSearchTerm(""); // 👈 Clear search on category select
+                    setSearchTerm("");
                 }} />
 
                 <View className="flex-row flex-wrap justify-between">
@@ -76,9 +76,18 @@ export default function HomeScreen() {
                             p.name.toLowerCase().includes(searchTerm.toLowerCase())
                         )
                         .map((item, index) => {
-                            const finalPrice = item.price;
-                            const oldPrice = item.oldPrice ?? item.price;
-                            const sale = item.sale ?? 0;
+                            const hasPromotion =
+                                item.promotion_price !== null &&
+                                item.promotion_price !== undefined &&
+                                typeof item.promotion_price === "number";
+
+                            const finalPrice: number = hasPromotion ? item.promotion_price! : item.price;
+                            const oldPrice: number | null = hasPromotion ? item.price : null;
+
+                            const sale: number | null =
+                                hasPromotion && item.price
+                                    ? Math.round(((item.price - item.promotion_price!) / item.price) * 100)
+                                    : null;
                             return (
                                 <ProductCard
                                     key={index}
@@ -87,8 +96,8 @@ export default function HomeScreen() {
                                     quantity={item.quantity}
                                     unit_of_measure={item.unit_of_measure}
                                     price={finalPrice.toFixed(2)}
-                                    oldPrice={oldPrice.toFixed(2)}
-                                    sale={sale.toString()}
+                                    oldPrice={oldPrice ? oldPrice.toFixed(2) : undefined}
+                                    sale={sale ? sale.toString() : undefined}
                                     onPress={() => handleProductPress(item)}
                                     liked={likedIds.has(item.id)}
                                     onToggleLike={() => toggleLike(item.id)}

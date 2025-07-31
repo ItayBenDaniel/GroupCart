@@ -76,4 +76,4 @@ for i in range(NUM_FAMILIES):
     db.commit()
 
 db.close()
-print("complete: 120 families purchase history added.")
+print("completed")

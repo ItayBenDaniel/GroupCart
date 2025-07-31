@@ -9,8 +9,8 @@ export type StoreProduct = {
     item_code: string;
     unit_of_measure: string;
     category: string;
-    sale?: number;
-    oldPrice?: number;
+    promotion_price?: number | null;
+
 };
 
 export default function useHomeScreenData() {
@@ -27,22 +27,10 @@ export default function useHomeScreenData() {
             .then((res) => {
                 if (isMounted) {
                     setRandomProducts(res.data);
-                    const possibleSales = [0, 10, 20, 30, 40, 50];
-                    const enriched = res.data.map((product: StoreProduct) => {
-                        const sale = possibleSales[Math.floor(Math.random() * possibleSales.length)];
-                        const oldPrice = sale ? (product.price / (1 - sale / 100)) : product.price;
-                        return {
-                            ...product,
-                            sale,
-                            oldPrice: sale ? oldPrice : null,
-                        };
-                    });
-                    setRandomProducts(enriched);
                 }
 
             })
             .catch((err) => {
-                //if (isMounted) console.error("Failed to fetch products", err);
             });
 
         const likesPromise = api.get("/likes/")
@@ -50,7 +38,6 @@ export default function useHomeScreenData() {
                 if (isMounted) setLikedIds(new Set(res.data.map((item: any) => item.id)));
             })
             .catch((err) => {
-                //if (isMounted) console.error("Failed to fetch liked items", err);
             });
 
         Promise.all([productsPromise, likesPromise])

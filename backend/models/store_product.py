@@ -20,4 +20,5 @@ class StoreProduct(Base):
     price = Column(Float, nullable=True)
     discounted = Column(Boolean, default=False)
     has_image = Column(Boolean, default=False, index=True)
+    promotion_price = Column(Float, nullable=True)
     store = relationship("Store")

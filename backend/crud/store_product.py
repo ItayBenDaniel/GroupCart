@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from backend.models.store_product import StoreProduct
 from backend.schemas.store_product import StoreProductCreate
 from backend.models.store import Store
+from typing import Dict
 
 
 def get_store_product_by_code(db: Session, item_code: str, store_id: int):
@@ -60,3 +61,31 @@ def create_store_product(db: Session, product: StoreProductCreate) -> StoreProdu
         raise
     db.refresh(db_product)
     return db_product
+
+
+def add_promos(db: Session, store_id, chain_id, promos: Dict):
+    store = (
+        db.query(Store)
+        .filter(Store.store_id == store_id, Store.chain_id == chain_id)
+        .first()
+    )
+
+    if not store:
+        print(f"Store not found for chain {chain_id}, store {store_id}")
+        return
+    store_id_og = store.id
+    for item_code, promo_price in promos.items():
+        existing = (
+            db.query(StoreProduct)
+            .filter(
+                StoreProduct.store_id == store_id_og,
+                StoreProduct.item_code == item_code,
+            )
+            .first()
+        )
+        if existing:
+            existing.promotion_price = promo_price
+            existing.discounted = True
+            db.add(existing)
+
+    db.commit()

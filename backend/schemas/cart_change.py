@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class CartChangeBase(BaseModel):
-    action: str  # "add", "update", "delete"
+    action: str
     store_product_id: int
     name: Optional[str] = None
     quantity: Optional[int] = None

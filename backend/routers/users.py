@@ -15,7 +15,6 @@ from backend import database
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-# Dependency to get the database session
 def get_db():
     db = database.SessionLocal()
     try:
@@ -37,7 +36,6 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    # Generate JWT token
     access_token = create_jwt_token(db_user.id)
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -48,13 +46,10 @@ def update_user_me(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
-    # Get the user from the database
     user = db.query(User).filter(User.id == user_id).first()
-    # If the user is not found, raise an HTTPException
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Only update fields that are provided
     if update_data.username:
         user.username = update_data.username
     if update_data.email:
@@ -62,7 +57,6 @@ def update_user_me(
     if update_data.password:
         user.hashed_password = hash_password(update_data.password)
 
-    # Commit the changes to the database
     db.commit()
     db.refresh(user)
     return user

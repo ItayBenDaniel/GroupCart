@@ -32,7 +32,7 @@ def create_purchase(
         raise HTTPException(status_code=400, detail="User must belong to a family")
     purchase = Purchase(family_id=user.family_id)
     db.add(purchase)
-    db.flush()  # Get purchase.id before inserting items
+    db.flush()
     for item in purchase_data.items:
         db.add(
             PurchaseItem(

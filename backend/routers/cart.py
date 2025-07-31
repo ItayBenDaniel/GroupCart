@@ -23,7 +23,6 @@ from haversine import haversine, Unit
 router = APIRouter(prefix="/cart", tags=["cart"])
 
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -43,14 +42,12 @@ def add_to_cart(
             status_code=400, detail="Amount added needs to be greater than 0"
         )
 
-    # Optional: Check that product exists
     product = (
         db.query(StoreProduct).filter(StoreProduct.id == item.store_product_id).first()
     )
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
-    # Checking if item exists in cart
     existing_item = (
         db.query(CartDB)
         .filter_by(
@@ -82,7 +79,6 @@ def add_to_cart(
         )
         db.commit()
         return existing_item
-    # Create cart item
     db_item = CartDB(
         user_id=user_id,
         store_product_id=item.store_product_id,
@@ -176,7 +172,6 @@ def get_family_cart(
             status_code=403, detail="Not authorized to access this family cart"
         )
 
-    # Get all non-deleted items from this family's cart
     items = (
         db.query(CartDB)
         .filter(CartDB.family_id == family_id, CartDB.is_deleted == False)
@@ -212,7 +207,6 @@ def update_cart_item(
     product = db.query(StoreProduct).filter(StoreProduct.id == id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    # Log the update
     db.add(
         CartChange(
             family_id=item.family_id,
@@ -250,7 +244,6 @@ def delete_cart_item(
     product = db.query(StoreProduct).filter(StoreProduct.id == id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    # Log the delete before removing
     db.add(
         CartChange(
             family_id=item.family_id,
@@ -379,7 +372,6 @@ def compare_cart_prices(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user),
 ):
-    # Get user's family and cart items
     user = db.query(User).filter(User.id == user_id).first()
     if not user or not user.family_id:
         return {"error": "User must belong to a family"}
@@ -397,7 +389,6 @@ def compare_cart_prices(
     if not cart_items:
         return {"error": "No active cart items found"}
 
-    # Get nearby stores
     all_stores = (
         db.query(Store)
         .filter(Store.latitude.isnot(None), Store.longitude.isnot(None))
@@ -416,7 +407,6 @@ def compare_cart_prices(
             if dist > radius_km:
                 continue
 
-            # Try to price the cart in this store
             total = 0
             found_all = True
 

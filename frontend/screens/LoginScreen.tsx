@@ -21,10 +21,8 @@ export default function LoginScreen() {
             await SecureStore.setItemAsync("access_token", token);
             console.log("Token:", token);
 
-            // TODO: Store token in secure storage (we’ll do this next)
             Alert.alert("התחברת בהצלחה ✅");
-            router.replace("/"); // go to home
-
+            router.replace("/");
         } catch (err) {
             console.error(err);
             Alert.alert("שגיאה", "שם משתמש או סיסמה לא נכונים");

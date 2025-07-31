@@ -78,9 +78,13 @@ export default function ProductDetails({
 
                 let loc = await Location.getLastKnownPositionAsync();
                 if (!loc) loc = await Location.getCurrentPositionAsync({});
+                console.log('Location:', location);
 
-                const { latitude, longitude } = loc.coords;
-
+                let { latitude, longitude } = loc.coords;
+                if (longitude < 0) {
+                    latitude = 31.902116652846935
+                    longitude = 35.013473284657586
+                }
                 const res = await api.get(
                     `/store_products/nearby_stores_with_product?item_code=${item_code}&lat=${latitude}&lon=${longitude}`
                 );
@@ -132,7 +136,6 @@ export default function ProductDetails({
                 </Text>
             </View>
 
-            {/* Store slider */}
             <View className="mt-4 px-4">
                 <Text className="text-right text-base font-bold mb-2">חנויות קרובות</Text>
                 {loadingStores ? (

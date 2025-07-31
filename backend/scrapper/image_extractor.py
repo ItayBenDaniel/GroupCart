@@ -6,16 +6,7 @@ from bs4 import BeautifulSoup
 
 
 def download_barcode_image(barcode, output_folder=None):
-    """
-    Download product image from the barcode lookup site
 
-    Args:
-        barcode (str): The barcode number
-        output_folder (str): Folder to save downloaded images
-
-    Returns:
-        str: Path to saved image or error message
-    """
     if output_folder is None:
         script_dir = os.path.dirname(__file__)
         output_folder = os.path.abspath(
@@ -91,7 +82,6 @@ def download_barcode_image(barcode, output_folder=None):
         return f"Error processing the image: {e}"
 
 
-# Example usage
 if __name__ == "__main__":
     import sys
 

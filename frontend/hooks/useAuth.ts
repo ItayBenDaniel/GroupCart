@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode";
-import { useFocusEffect } from "expo-router"; // or @react-navigation/native if using that
+import { useFocusEffect } from "expo-router";
 
 type TokenPayload = {
     sub: string;

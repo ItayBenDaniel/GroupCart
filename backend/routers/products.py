@@ -4,13 +4,12 @@ from backend import database
 from backend.crud.products import (
     get_products,
     create_product,
-)  # ✅ Import functions from crud
+)
 from backend.schemas.products import Product, ProductCreate
 
 router = APIRouter(prefix="/products", tags=["products"])
 
 
-# Dependency to get the database session
 def get_db():
     db = database.SessionLocal()
     try:

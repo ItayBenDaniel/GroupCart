@@ -5,11 +5,12 @@ from backend.schemas.store_product import StoreProduct, StoreProductCreate
 from backend.crud.store_product import get_num_of_store_products
 from backend.models.store import Store
 from backend.models.store_product import StoreProduct as StoreProductDB
+from random import random
+from haversine import haversine, Unit
 
 router = APIRouter(prefix="/store_products", tags=["store_products"])
 
 
-# Dependency to get the database session
 def get_db():
     db = database.SessionLocal()
     try:
@@ -33,7 +34,6 @@ def nearby_stores_with_product(
     from haversine import haversine, Unit
 
     print("STORE PRODUCT IS {}")
-    # Get all matching store products
     store_products = (
         db.query(StoreProductDB)
         .filter(StoreProductDB.item_code == item_code)
@@ -66,3 +66,36 @@ def nearby_stores_with_product(
 
     results.sort(key=lambda x: x["distance_km"])
     return results[:5]
+
+
+@router.get("/sales/nearby", response_model=list[StoreProduct])
+def get_sales_nearby(
+    lat: float = 31.90207111149355,
+    lon: float = 35.01350010674653,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+):
+
+    store_products = (
+        db.query(StoreProductDB)
+        .filter(
+            StoreProductDB.promotion_price.isnot(None), StoreProductDB.has_image == True
+        )
+        .join(Store)
+        .filter(Store.latitude.isnot(None), Store.longitude.isnot(None))
+        .all()
+    )
+
+    nearby = []
+    for sp in store_products:
+        try:
+            dist = haversine(
+                (lat, lon),
+                (float(sp.store.latitude), float(sp.store.longitude)),
+                unit=Unit.KILOMETERS,
+            )
+            if dist <= 2000:
+                nearby.append(sp)
+        except:
+            continue
+    return nearby[:limit]

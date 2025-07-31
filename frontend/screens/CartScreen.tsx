@@ -55,7 +55,7 @@ export default function CartScreen() {
     const handleBuyCart = async () => {
         const cartPayload = {
             items: cartItems.map(item => ({
-                product_id: item.id, // or item.store_product.id if nested
+                product_id: item.id,
                 quantity: item.quantity,
             }))
         };
@@ -104,7 +104,7 @@ export default function CartScreen() {
             await api.patch(`/cart/${id}/mark_purchased`);
             const updated = await api.get("/cart/full");
             setCartItems(updated.data);
-            fetchHistory(); // Optional if you want to log this too
+            fetchHistory();
         } catch (err) {
             console.error("Failed to mark as purchased", err);
         }

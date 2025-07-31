@@ -7,7 +7,7 @@ from backend.models.store_product import StoreProduct
 from backend.models.store import Store
 from backend.scrapper.image_extractor import (
     download_barcode_image,
-)  # assuming your function is in this file
+)
 import time
 import random
 import sys
@@ -19,8 +19,6 @@ MAX_PRODUCTS = 100
 
 def main():
     db: Session = SessionLocal()
-    print("HERE wow wow")
-    # 🔎 Subquery to find item_codes that appear under multiple chains
     subq = (
         db.query(StoreProduct.item_code)
         .join(Store, StoreProduct.store_id == Store.id)
@@ -30,7 +28,6 @@ def main():
         .subquery()
     )
 
-    # 🎯 Main query to get a random selection of those products
     products = (
         db.query(StoreProduct)
         .filter(StoreProduct.item_code.in_(subq))
@@ -43,15 +40,15 @@ def main():
 
     success = 0
     for product in products:
-        time.sleep(random.uniform(1.0, 2.5))  # polite delay
+        time.sleep(random.uniform(1.0, 2.5))
         result = download_barcode_image(product.item_code)
         if result.startswith("Image saved"):
             product.has_image = True
             db.add(product)
             success += 1
-            print(f"✅ Image saved for {product.item_code}")
+            print(f"Image saved for {product.item_code}")
         else:
-            print(f"❌ {product.item_code}: {result}")
+            print(f" error {product.item_code}")
     print(f"Successfully downloaded {success} out of {len(products)} images")
     db.commit()
     db.close()

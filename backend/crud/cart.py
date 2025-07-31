@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend.models.cart import CartDB  # ✅ Correct Import
-from backend.schemas.cart import CartItemCreate  # ✅ Schema import for validation
+from backend.models.cart import CartDB
+from backend.schemas.cart import CartItemCreate
 
 
 def get_products_in_cart(db: Session, skip: int = 0, limit: int = 10):

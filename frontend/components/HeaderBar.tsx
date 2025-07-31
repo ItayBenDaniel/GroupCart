@@ -21,7 +21,6 @@ export default function HeaderBar({ name = "",
 
     return (
         <View className="flex-col mt-3">
-            {/* Top row with icon */}
             <View className="flex-row justify-between items-center mx-5 mb-2">
                 <TouchableOpacity onPress={openSearch} className="w-6">
                     <Ionicons
@@ -37,7 +36,6 @@ export default function HeaderBar({ name = "",
                 </View>
             </View>
 
-            {/* Search Modal */}
             <Modal transparent animationType="fade" visible={isSearchActive}>
                 <Pressable
                     onPress={() => setIsSearchActive(false)}

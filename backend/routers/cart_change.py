@@ -20,7 +20,6 @@ def get_db():
         db.close()
 
 
-# Log a cart change (called inside your existing cart routes)
 @router.post("/change", response_model=CartChangeOut)
 def log_cart_change(change: CartChangeCreate, db: Session = Depends(get_db)):
     new_change = CartChange(
@@ -32,7 +31,6 @@ def log_cart_change(change: CartChangeCreate, db: Session = Depends(get_db)):
     return new_change
 
 
-# Get history for the family
 @router.get("/", response_model=list[CartChangeOut])
 def get_cart_history(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
@@ -50,7 +48,6 @@ def get_cart_history(
     )
 
 
-# Undo the last change (latest not yet undone)
 @router.post("/undo", response_model=CartChangeOut)
 def undo_last_change(
     db: Session = Depends(get_db), user_id: int = Depends(get_current_user)
@@ -65,7 +62,6 @@ def undo_last_change(
     if not last_change:
         raise HTTPException(status_code=404, detail="No changes to undo")
 
-    # Invert action
     if last_change.action == "add":
         db.query(CartDB).filter(
             CartDB.family_id == last_change.family_id,

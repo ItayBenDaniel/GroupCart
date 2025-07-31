@@ -15,11 +15,9 @@ from backend.routers import (
 from fastapi.staticfiles import StaticFiles
 import os
 
-# Initialize database tables
 Base.metadata.create_all(bind=engine)
 
 
-# Create the FastAPI app
 app = FastAPI()
 icons_path = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../frontend/assets/icons")
@@ -39,4 +37,4 @@ app.include_router(liked_items.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Shopping List API"}
+    return {"message": "Welcome"}

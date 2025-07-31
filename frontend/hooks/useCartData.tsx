@@ -23,7 +23,6 @@ export default function useCartData() {
                 const res = await api.get("/cart/full");
                 setCartItems(res.data);
             } catch (err) {
-                //console.error("Failed to load cart", err);
             } finally {
                 setLoading(false);
             }

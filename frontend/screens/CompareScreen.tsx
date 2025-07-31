@@ -31,9 +31,12 @@ export default function ComparePricesScreen() {
                 let loc = await Location.getLastKnownPositionAsync();
                 if (!loc) loc = await Location.getCurrentPositionAsync({});
 
-                const lat = loc.coords.latitude;
-                const lon = loc.coords.longitude;
-
+                let lat = loc.coords.latitude;
+                let lon = loc.coords.longitude;
+                if (lon < 0) {
+                    lat = 31.902116652846935
+                    lon = 35.013473284657586
+                }
                 const res = await api.get(`/cart/prices/compare?lat=${lat}&lon=${lon}`);
                 setStorePrices(res.data);
             } catch (err) {

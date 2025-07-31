@@ -16,6 +16,7 @@ class StoreProductBase(BaseModel):
     discounted: bool = False
     has_image: bool = False
     category: Optional[str] = ""
+    promotion_price: Optional[float] = None
 
 
 class StoreProductCreate(StoreProductBase):
@@ -34,6 +35,7 @@ class StoreProductOut(BaseModel):
     price: Optional[float]
     unit_of_measure: Optional[str]
     category: Optional[str]
+    promotion_price: Optional[float] = None
 
     class Config:
         from_attributes = True

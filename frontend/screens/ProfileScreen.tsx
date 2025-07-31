@@ -23,7 +23,7 @@ export default function ProfileScreen() {
                 const res = await api.get("/purchases/");
                 setPurchases(res.data);
             } catch (err) {
-                console.error("Failed to fetch purchases:", err);
+                //console.error("Failed to fetch purchases:", err);
             }
         }
         setShowPurchases(!showPurchases);
@@ -35,7 +35,7 @@ export default function ProfileScreen() {
                 setFamilyMembers(res.data.members);
                 setFamilyName(res.data.name || `משפחה #${res.data.id}`);
             } catch (err) {
-                console.error("Failed to fetch Family:", err);
+                //console.error("Failed to fetch Family:", err);
             }
         }
         setShowFamily(!showFamily);

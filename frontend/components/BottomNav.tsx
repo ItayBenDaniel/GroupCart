@@ -21,7 +21,7 @@ export default function BottomNav() {
                 ? "person"
                 : pathname.startsWith("/login")
                     ? "person"
-                    : "home"; // default
+                    : "home";
     const handle_token_cheking = async () => {
         const token = await SecureStore.getItemAsync("access_token");
         router.push(token ? "/profile" : "/signup");

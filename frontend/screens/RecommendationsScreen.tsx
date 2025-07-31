@@ -7,7 +7,9 @@ import { Alert } from "react-native";
 
 export default function RecommendationsScreen() {
     const [recommendations, setRecommendations] = useState<any[]>([]);
+    const [promotions, setPromotions] = useState<any[]>([]);
     const [liked, setLiked] = useState<any[]>([]);
+    const [pastBought, setPastBought] = useState<any[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedTab, setSelectedTab] = useState<string>("מומלצים");
     const tabs = ["קניתי בעבר", "הנחות", "מועדפים", "מומלצים"];
@@ -23,6 +25,24 @@ export default function RecommendationsScreen() {
                 console.error("Failed to load recommendations:", error);
             }
         };
+        const fetchPastBought = async () => {
+            try {
+                const res = await api.get("/recommendations/past");
+                setPastBought(res.data);
+
+            } catch (error) {
+                console.error("Failed to load past bought:", error);
+            }
+        };
+
+        const fetchPromotions = async () => {
+            try {
+                const res = await api.get("/store_products/sales/nearby");
+                setPromotions(res.data);
+            } catch (error) {
+                console.error("Failed to load promotions:", error);
+            }
+        };
         const fetchLiked = async () => {
             try {
                 const res = await api.get("/likes/");
@@ -31,8 +51,10 @@ export default function RecommendationsScreen() {
                 console.error("Failed to load Likes:", error);
             }
         };
+        fetchPromotions();
         fetchRecommendations();
         fetchLiked();
+        fetchPastBought();
     }, []);
 
     const toggleSelect = (id: number) => {
@@ -61,7 +83,6 @@ export default function RecommendationsScreen() {
                         <Ionicons name="arrow-forward-circle-outline" size={24} color="#F17547" />
                     </TouchableOpacity>
                 </View>
-                {/* Tabs */}
                 <View className="flex-row justify-end mt-4 mb-4  space-x-reverse ">
                     {tabs.map((tab) => (
                         <TouchableOpacity
@@ -79,7 +100,14 @@ export default function RecommendationsScreen() {
             </View>
 
             <ScrollView className="px-6 mb-20">
-                {(selectedTab === "מועדפים" ? liked : recommendations).map((product, index) => (
+                {(selectedTab === "מועדפים"
+                    ? liked
+                    : selectedTab === "הנחות"
+                        ? promotions
+                        : selectedTab === "קניתי בעבר"
+                            ? pastBought
+                            : recommendations
+                ).map((product, index) => (
                     <TouchableOpacity
                         key={index}
                         className={`flex-row justify-between items-center mb-4  rounded-2xl p-4 ${selected.includes(product.id)
@@ -88,7 +116,6 @@ export default function RecommendationsScreen() {
                             }`}
                         onPress={() => toggleSelect(product.id)}
                     >
-                        {/* Image (left) */}
                         {product.has_image ? (
                             <Image
                                 source={{ uri: `http://10.100.102.23:8002/static/icons/${product.item_code}.png` }}
@@ -99,15 +126,12 @@ export default function RecommendationsScreen() {
                             <View className="w-16 h-16 bg-gray-300 rounded-md" />
                         )}
 
-
-                        {/* Product details (middle) */}
                         <View className="flex-1 mr-4">
                             <Text className="text-right font-bold text-gray-800 mb-1">{product.name}</Text>
                             <Text className="text-right text-sm text-gray-500">
                                 ₪ {product.price?.toFixed(2) ?? "?"}
                             </Text>
                         </View>
-                        {/* Checkbox (right) */}
                         <View className="w-6 h-6 border-2 border-gray-400 rounded-sm">
                             {selected.includes(product.id) && (
                                 <View className="bg-orange-500 w-full h-full rounded-sm" />
