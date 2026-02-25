@@ -127,37 +127,57 @@ Test coverage includes:
 ### 🏠 Home Screen
 Browse products by category with personalized discount badges and a clean product grid.
 
-![Home Screen](docs/image3.jpg)
+<div align="center">
+  <img src="docs/image5.jpg" height="450" />
+</div>
+<br/>
 
 ### 🛒 Shopping Cart
 View all items added by family members, see who added each item, undo/redo changes, and compare prices across stores.
 
-![Shopping Cart](docs/image7.jpg)
+<div align="center">
+  <img src="docs/image2.jpg" height="450" />
+</div>
+<br/>
 
 ### ✨ Smart Recommendations
 AI-powered product suggestions filtered into tabs — Recommended, Favorites, Discounts, and Past Purchases.
 
-![Recommendations](docs/image5.jpg)
+<div align="center">
+  <img src="docs/image7.jpg" height="450" />
+</div>
+<br/>
 
 ### 📦 Product Page
 Detailed product view with pricing, nearby store availability, and distance — tap to add directly to the family cart.
 
-![Product Page](docs/image4.png)
+<div align="center">
+  <img src="docs/image6.jpg" height="450" />
+</div>
+<br/>
 
 ### 🗺️ Cart Price Comparison
 Compare the total cost of your cart across nearby supermarket branches, sorted by price.
 
-![Price Comparison](docs/image1.jpg)
+<div align="center">
+  <img src="docs/image3.jpg" height="450" />
+</div>
+<br/>
 
 ### 👤 Profile & Settings
 Manage your account, view family members, and configure your search radius for nearby stores.
 
-![Profile](docs/image6.jpg)
+<div align="center">
+  <img src="docs/image1.jpg" height="450" />
+</div>
+<br/>
 
 ### 🏗️ System Architecture
 High-level architecture diagram showing the interaction between the React Native app, FastAPI backend, PostgreSQL database, prediction system, and Google Maps integration.
 
-![Architecture Diagram](docs/image2.png)
+<div align="center">
+  <img src="docs/image4.png" height="450" />
+</div>
 
 ---
 
