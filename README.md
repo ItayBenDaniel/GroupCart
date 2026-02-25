@@ -122,6 +122,45 @@ Test coverage includes:
 
 ---
 
+## 🖼️ Screenshots
+
+### 🏠 Home Screen
+Browse products by category with personalized discount badges and a clean product grid.
+
+![Home Screen](image3.jpg)
+
+### 🛒 Shopping Cart
+View all items added by family members, see who added each item, undo/redo changes, and compare prices across stores.
+
+![Shopping Cart](image7.jpg)
+
+### ✨ Smart Recommendations
+AI-powered product suggestions filtered into tabs — Recommended, Favorites, Discounts, and Past Purchases.
+
+![Recommendations](image5.jpg)
+
+### 📦 Product Page
+Detailed product view with pricing, nearby store availability, and distance — tap to add directly to the family cart.
+
+![Product Page](image4.png)
+
+### 🗺️ Cart Price Comparison
+Compare the total cost of your cart across nearby supermarket branches, sorted by price.
+
+![Price Comparison](image1.jpg)
+
+### 👤 Profile & Settings
+Manage your account, view family members, and configure your search radius for nearby stores.
+
+![Profile](image6.jpg)
+
+### 🏗️ System Architecture
+High-level architecture diagram showing the interaction between the React Native app, FastAPI backend, PostgreSQL database, prediction system, and Google Maps integration.
+
+![Architecture Diagram](image2.png)
+
+---
+
 ## 👤 Author
 
 **Itay Ben Daniel**
